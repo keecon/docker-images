@@ -16,7 +16,7 @@ jobs:
         image: tomcat
         directory: tomcat
         dockerfile: tomcat/Dockerfile
-        tag: 8-jdk8
+        tags: 8-jdk8
         registry: ghcr.io
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
@@ -30,7 +30,7 @@ jobs:
         image: gradle
         directory: gradle
         dockerfile: gradle/Dockerfile
-        tag: 5-jdk8
+        tags: 5-jdk8
         registry: ghcr.io
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
@@ -44,7 +44,7 @@ jobs:
         image: node
         directory: node
         dockerfile: node/Dockerfile
-        tag: '10'
+        tags: '10'
         registry: ghcr.io
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
