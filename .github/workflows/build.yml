@@ -16,7 +16,7 @@ jobs:
         image: tomcat
         directory: tomcat
         dockerfile: tomcat/Dockerfile
-        tags: 8-jdk8
+        tags: 8-jre8
         registry: ghcr.io
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
