@@ -1,0 +1,47 @@
+name: build
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+
+jobs:
+  tomcat:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: mr-smithers-excellent/docker-build-push@v4
+      with:
+        image: keecon/tomcat
+        registry: ghcr.io
+        tag: 8-jdk8
+        dockerfile: tomcat/Dockerfile
+        username: ${{ github.actor }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+  gradle:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: mr-smithers-excellent/docker-build-push@v4
+      with:
+        image: keecon/gradle
+        registry: ghcr.io
+        tag: 5-jdk8
+        dockerfile: gradle/Dockerfile
+        username: ${{ github.actor }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+  node:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: mr-smithers-excellent/docker-build-push@v4
+      with:
+        image: keecon/node
+        registry: ghcr.io
+        tag: '10'
+        dockerfile: node/Dockerfile
+        username: ${{ github.actor }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
