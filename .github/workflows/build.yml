@@ -11,37 +11,40 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: mr-smithers-excellent/docker-build-push@v4
+    - uses: mr-smithers-excellent/docker-build-push@v5
       with:
-        image: keecon/tomcat
-        registry: ghcr.io
-        tag: 8-jdk8
+        image: tomcat
+        directory: tomcat
         dockerfile: tomcat/Dockerfile
-        username: ${{ github.actor }}
+        tag: 8-jdk8
+        registry: ghcr.io
+        username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
   gradle:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: mr-smithers-excellent/docker-build-push@v4
+    - uses: mr-smithers-excellent/docker-build-push@v5
       with:
-        image: keecon/gradle
-        registry: ghcr.io
-        tag: 5-jdk8
+        image: gradle
+        directory: gradle
         dockerfile: gradle/Dockerfile
-        username: ${{ github.actor }}
+        tag: 5-jdk8
+        registry: ghcr.io
+        username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
   node:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: mr-smithers-excellent/docker-build-push@v4
+    - uses: mr-smithers-excellent/docker-build-push@v5
       with:
-        image: keecon/node
-        registry: ghcr.io
-        tag: '10'
+        image: node
+        directory: node
         dockerfile: node/Dockerfile
-        username: ${{ github.actor }}
+        tag: '10'
+        registry: ghcr.io
+        username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
