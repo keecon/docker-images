@@ -1,0 +1,1 @@
+FROM minio/minio:RELEASE.2021-06-17T00-10-46Z.hotfix.49f6035b1

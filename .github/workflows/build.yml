@@ -48,3 +48,31 @@ jobs:
         registry: ghcr.io
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
+
+  minio:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: mr-smithers-excellent/docker-build-push@v5
+      with:
+        image: minio
+        directory: minio
+        dockerfile: minio/Dockerfile
+        tags: 2021,2021-06-17
+        registry: ghcr.io
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+  minio-client:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: mr-smithers-excellent/docker-build-push@v5
+      with:
+        image: minio-client
+        directory: minio
+        dockerfile: minio/Dockerfile.client
+        tags: 2021,2021-06-13
+        registry: ghcr.io
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
