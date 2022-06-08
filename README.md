@@ -9,3 +9,4 @@ project docker base images
 - [node](https://github.com/orgs/keecon/packages/container/package/node)
 - [minio](https://github.com/orgs/keecon/packages/container/package/minio)
 - [mc](https://github.com/orgs/keecon/packages/container/package/minio-client)
+- [azure-sql-edge](https://github.com/orgs/keecon/packages/container/package/azure-sql-edge)

@@ -82,3 +82,19 @@ jobs:
         registry: ghcr.io
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
+
+  azure-sql-edge:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: mr-smithers-excellent/docker-build-push@master
+      with:
+        image: azure-sql-edge
+        directory: azure-sql-edge
+        dockerfile: azure-sql-edge/Dockerfile
+        tags: 2022,latest
+        platform: linux/amd64,linux/arm64
+        enableBuildKit: true
+        registry: ghcr.io
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
