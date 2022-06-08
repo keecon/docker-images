@@ -102,4 +102,4 @@ jobs:
         docker buildx build --platform linux/amd64,linux/arm64
         -t azure-sql-edge:2022
         -t azure-sql-edge:latest
-        --push azure-sql-edge/
+        --push .
