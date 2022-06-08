@@ -1,1 +1,3 @@
 FROM minio/mc:RELEASE.2021-06-13T17-48-22Z
+
+LABEL org.opencontainers.image.source https://github.com/keecon/docker-images
