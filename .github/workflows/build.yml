@@ -100,6 +100,6 @@ jobs:
       working-directory: azure-sql-edge
       run: >
         docker buildx build --platform linux/amd64,linux/arm64
-        -t azure-sql-edge:2022
-        -t azure-sql-edge:latest
+        -t ghcr.io/keecon/azure-sql-edge:2022
+        -t ghcr.io/keecon/azure-sql-edge:latest
         --push .
