@@ -30,8 +30,8 @@ jobs:
         context: azure-sql-edge
         platforms: linux/amd64,linux/arm64
         tags: |
-          keecon/azure-sql-edge:2022
-          keecon/azure-sql-edge:latest
+          ghcr.io/keecon/azure-sql-edge:2022
+          ghcr.io/keecon/azure-sql-edge:latest
 
   gradle:
     runs-on: ubuntu-latest
@@ -49,7 +49,7 @@ jobs:
         push: true
         context: gradle
         platforms: linux/amd64,linux/arm64
-        tags: keecon/gradle:5-jdk8
+        tags: ghcr.io/keecon/gradle:5-jdk8
 
   minio:
     runs-on: ubuntu-latest
@@ -68,8 +68,8 @@ jobs:
         context: minio
         platforms: linux/amd64,linux/arm64
         tags: |
-          keecon/minio:2021
-          keecon/minio:2021-06-17
+          ghcr.io/keecon/minio:2021
+          ghcr.io/keecon/minio:2021-06-17
 
   minio-client:
     runs-on: ubuntu-latest
@@ -89,8 +89,8 @@ jobs:
         file: minio/Dockerfile.client
         platforms: linux/amd64,linux/arm64
         tags: |
-          keecon/minio-client:2021
-          keecon/minio-client:2021-06-17
+          ghcr.io/keecon/minio-client:2021
+          ghcr.io/keecon/minio-client:2021-06-17
 
   node:
     runs-on: ubuntu-latest
@@ -108,7 +108,7 @@ jobs:
         push: true
         context: node
         platforms: linux/amd64,linux/arm64
-        tags: keecon/node:10
+        tags: ghcr.io/keecon/node:10
 
   postgres:
     runs-on: ubuntu-latest
@@ -127,8 +127,8 @@ jobs:
         context: postgres
         platforms: linux/amd64,linux/arm64
         tags: |
-          keecon/postgres:14
-          keecon/postgres:14.6
+          ghcr.io/keecon/postgres:14
+          ghcr.io/keecon/postgres:14.6
 
   tcp-proxy:
     runs-on: ubuntu-latest
@@ -146,7 +146,7 @@ jobs:
         push: true
         context: tcp-proxy
         platforms: linux/amd64,linux/arm64
-        tags: keecon/tcp-proxy:latest
+        tags: ghcr.io/keecon/tcp-proxy:latest
 
   tomcat:
     runs-on: ubuntu-latest
@@ -164,4 +164,4 @@ jobs:
         push: true
         context: tomcat
         platforms: linux/amd64,linux/arm64
-        tags: keecon/tomcat:8-jre8
+        tags: ghcr.io/keecon/tomcat:8-jre8
