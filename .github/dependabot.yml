@@ -8,10 +8,7 @@ updates:
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule:
-    interval: "weekly"
-    day: "tuesday"
-    time: "10:00"
-    timezone: "Asia/Seoul"
+    interval: "daily"
   open-pull-requests-limit: 10
   labels:
   - "dependencies"
