@@ -106,7 +106,7 @@ jobs:
         push: true
         context: open-telemetry/agent
         file: open-telemetry/agent/Dockerfile.jdk11
-        platforms: linux/amd64,linux/arm64
+        platforms: linux/amd64
         tags: ghcr.io/keecon/open-telemetry:jdk11
 
   open-telemetry-jdk17:
@@ -125,7 +125,7 @@ jobs:
         push: true
         context: open-telemetry/agent
         file: open-telemetry/agent/Dockerfile.jdk17
-        platforms: linux/amd64,linux/arm64
+        platforms: linux/amd64
         tags: ghcr.io/keecon/open-telemetry:jdk17
 
   open-telemetry-tomcat9-jdk8:
