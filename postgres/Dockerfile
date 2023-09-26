@@ -5,7 +5,7 @@ LABEL org.opencontainers.image.source https://github.com/keecon/docker-images
 RUN apt-get update \
     && apt-get install -y curl make gcc postgresql-server-dev-14 libicu-dev \
     && cd /tmp \
-    && curl -L -O https://osdn.net/projects/pgbigm/downloads/72448/pg_bigm-1.2-20200228.tar.gz \
+    && curl -L -O https://github.com/pgbigm/pg_bigm/releases/download/v1.2-20200228/pg_bigm-1.2-20200228.tar.gz \
     && tar zxvf pg_bigm-1.2-20200228.tar.gz \
     && cd pg_bigm-1.2-20200228 \
     && make USE_PGXS=1 \
