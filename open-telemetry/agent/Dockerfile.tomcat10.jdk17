@@ -12,3 +12,4 @@ RUN apt-get update \
     && chmod -R o+x /otel \
     && curl -SL ${INSTALL_URL} -o /otel/opentelemetry-javaagent.jar \
     && rm -rf /var/lib/apt/lists/*
+

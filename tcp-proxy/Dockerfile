@@ -15,3 +15,4 @@ LABEL org.opencontainers.image.source https://github.com/keecon/docker-images
 COPY --from=build-env /workspace/tcp-proxy /bin/tcp-proxy
 
 CMD ["tcp-proxy"]
+

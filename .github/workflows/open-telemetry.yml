@@ -1,4 +1,5 @@
 name: open-telemetry
+
 on:
   push:
     branches:
