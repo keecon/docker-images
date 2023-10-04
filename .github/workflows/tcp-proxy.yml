@@ -1,4 +1,4 @@
-name: build tcp-proxy
+name: tcp-proxy
 
 on:
   push:

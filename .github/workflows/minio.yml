@@ -1,4 +1,4 @@
-name: build minio
+name: minio
 
 on:
   push:

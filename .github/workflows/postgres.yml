@@ -1,4 +1,4 @@
-name: build postgres
+name: postgres
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: build open-telemetry
+name: open-telemetry
 
 on:
   push:
