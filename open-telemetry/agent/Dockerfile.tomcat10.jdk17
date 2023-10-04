@@ -1,4 +1,4 @@
-FROM tomcat:10-jdk11-temurin
+FROM tomcat:10-jdk17-temurin
 
 LABEL org.opencontainers.image.source https://github.com/keecon/docker-images
 
