@@ -1,4 +1,4 @@
-FROM postgres:14
+FROM postgres:14.6
 
 LABEL org.opencontainers.image.source https://github.com/keecon/docker-images
 
@@ -21,4 +21,3 @@ ENTRYPOINT ["docker-entrypoint.sh"]
 EXPOSE 5432
 
 CMD ["postgres"]
-
