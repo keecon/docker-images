@@ -1,5 +1,4 @@
 name: postgres
-
 on:
   push:
     branches:
