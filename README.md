@@ -1,6 +1,11 @@
 # docker-images
 
-[![build](https://github.com/keecon/docker-images/actions/workflows/build.yml/badge.svg)](https://github.com/keecon/docker-images/actions/workflows/build.yml)
+[![gradle](https://github.com/keecon/docker-images/actions/workflows/gradle.yml/badge.svg)](https://github.com/keecon/docker-images/actions/workflows/gradle.yml)
+[![minio](https://github.com/keecon/docker-images/actions/workflows/minio.yml/badge.svg)](https://github.com/keecon/docker-images/actions/workflows/minio.yml)
+[![node](https://github.com/keecon/docker-images/actions/workflows/node.yml/badge.svg)](https://github.com/keecon/docker-images/actions/workflows/node.yml)
+[![open-telemetry](https://github.com/keecon/docker-images/actions/workflows/open-telemetry.yml/badge.svg)](https://github.com/keecon/docker-images/actions/workflows/open-telemetry.yml)
+[![postgres](https://github.com/keecon/docker-images/actions/workflows/postgres.yml/badge.svg)](https://github.com/keecon/docker-images/actions/workflows/postgres.yml)
+[![tcp-proxy](https://github.com/keecon/docker-images/actions/workflows/tcp-proxy.yml/badge.svg)](https://github.com/keecon/docker-images/actions/workflows/gradle.yml)
 
 project docker base images
 
