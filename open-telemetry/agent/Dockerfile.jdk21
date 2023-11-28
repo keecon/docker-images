@@ -1,14 +1,13 @@
-FROM tomcat:9-jdk8-temurin
+FROM eclipse-temurin:21-alpine
 
 LABEL org.opencontainers.image.source https://github.com/keecon/docker-images
 
+# https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/tag/v1.32.0
 ARG INSTALL_URL=https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar
 
-RUN rm -rf /usr/local/tomcat/webapps/*
-
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends curl \
+RUN apk add --update curl \
     && mkdir -p /otel \
     && chmod -R o+x /otel \
     && curl -SL ${INSTALL_URL} -o /otel/opentelemetry-javaagent.jar \
-    && rm -rf /var/lib/apt/lists/*
+    && apk del curl \
+    && rm /var/cache/apk/*
