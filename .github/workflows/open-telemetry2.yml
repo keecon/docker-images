@@ -1,4 +1,4 @@
-name: open-telemetry
+name: open-telemetry2
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
     - '.github/workflows/open-telemetry.yml'
 
 jobs:
-  open-telemetry-jdk21:
+  open-telemetry2-jdk21:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -26,13 +26,11 @@ jobs:
         context: open-telemetry/agent
         file: open-telemetry/agent/Dockerfile.jdk21
         platforms: linux/amd64
-        tags: |
-          ghcr.io/keecon/open-telemetry:jdk21
-          ghcr.io/keecon/open-telemetry:1-jdk21
+        tags: ghcr.io/keecon/open-telemetry:2-jdk21
         build-args:
-          OTEL_VERSION=${{ secrets.OTEL_VERSION }}
+          OTEL_VERSION=${{ secrets.OTEL2_VERSION }}
 
-  open-telemetry-jdk17:
+  open-telemetry2-jdk17:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -49,13 +47,11 @@ jobs:
         context: open-telemetry/agent
         file: open-telemetry/agent/Dockerfile.jdk17
         platforms: linux/amd64
-        tags: |
-          ghcr.io/keecon/open-telemetry:jdk17
-          ghcr.io/keecon/open-telemetry:1-jdk17
+        tags: ghcr.io/keecon/open-telemetry:2-jdk17
         build-args:
-          OTEL_VERSION=${{ secrets.OTEL_VERSION }}
+          OTEL_VERSION=${{ secrets.OTEL2_VERSION }}
 
-  open-telemetry-jdk11:
+  open-telemetry2-jdk11:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -72,13 +68,11 @@ jobs:
         context: open-telemetry/agent
         file: open-telemetry/agent/Dockerfile.jdk11
         platforms: linux/amd64
-        tags: |
-          ghcr.io/keecon/open-telemetry:jdk11
-          ghcr.io/keecon/open-telemetry:1-jdk11
+        tags: ghcr.io/keecon/open-telemetry:2-jdk11
         build-args:
-          OTEL_VERSION=${{ secrets.OTEL_VERSION }}
+          OTEL_VERSION=${{ secrets.OTEL2_VERSION }}
 
-  open-telemetry-tomcat10-jdk17:
+  open-telemetry2-tomcat10-jdk17:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -95,13 +89,11 @@ jobs:
         context: open-telemetry/agent
         file: open-telemetry/agent/Dockerfile.tomcat10.jdk17
         platforms: linux/amd64,linux/arm64
-        tags: |
-          ghcr.io/keecon/open-telemetry:tomcat10-jdk17
-          ghcr.io/keecon/open-telemetry:1-tomcat10-jdk17
+        tags: ghcr.io/keecon/open-telemetry:2-tomcat10-jdk17
         build-args:
-          OTEL_VERSION=${{ secrets.OTEL_VERSION }}
+          OTEL_VERSION=${{ secrets.OTEL2_VERSION }}
 
-  open-telemetry-tomcat9-jdk11:
+  open-telemetry2-tomcat9-jdk11:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -118,8 +110,6 @@ jobs:
         context: open-telemetry/agent
         file: open-telemetry/agent/Dockerfile.tomcat9.jdk11
         platforms: linux/amd64,linux/arm64
-        tags: |
-          ghcr.io/keecon/open-telemetry:tomcat9-jdk11
-          ghcr.io/keecon/open-telemetry:1-tomcat9-jdk11
+        tags: ghcr.io/keecon/open-telemetry:2-tomcat9-jdk11
         build-args:
-          OTEL_VERSION=${{ secrets.OTEL_VERSION }}
+          OTEL_VERSION=${{ secrets.OTEL2_VERSION }}
