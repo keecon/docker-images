@@ -8,6 +8,9 @@ on:
     - 'open-telemetry/**'
     - '.github/workflows/open-telemetry.yml'
 
+env:
+  OTEL_VERSION: v1.32.1
+
 jobs:
   open-telemetry-jdk21:
     runs-on: ubuntu-latest
@@ -30,7 +33,7 @@ jobs:
           ghcr.io/keecon/open-telemetry:jdk21
           ghcr.io/keecon/open-telemetry:1-jdk21
         build-args:
-          OTEL_VERSION=${{ secrets.OTEL_VERSION }}
+          OTEL_VERSION=${{ env.OTEL_VERSION }}
 
   open-telemetry-jdk17:
     runs-on: ubuntu-latest
@@ -53,7 +56,7 @@ jobs:
           ghcr.io/keecon/open-telemetry:jdk17
           ghcr.io/keecon/open-telemetry:1-jdk17
         build-args:
-          OTEL_VERSION=${{ secrets.OTEL_VERSION }}
+          OTEL_VERSION=${{ env.OTEL_VERSION }}
 
   open-telemetry-jdk11:
     runs-on: ubuntu-latest
@@ -76,7 +79,7 @@ jobs:
           ghcr.io/keecon/open-telemetry:jdk11
           ghcr.io/keecon/open-telemetry:1-jdk11
         build-args:
-          OTEL_VERSION=${{ secrets.OTEL_VERSION }}
+          OTEL_VERSION=${{ env.OTEL_VERSION }}
 
   open-telemetry-tomcat10-jdk17:
     runs-on: ubuntu-latest
@@ -99,7 +102,7 @@ jobs:
           ghcr.io/keecon/open-telemetry:tomcat10-jdk17
           ghcr.io/keecon/open-telemetry:1-tomcat10-jdk17
         build-args:
-          OTEL_VERSION=${{ secrets.OTEL_VERSION }}
+          OTEL_VERSION=${{ env.OTEL_VERSION }}
 
   open-telemetry-tomcat9-jdk11:
     runs-on: ubuntu-latest
@@ -122,4 +125,4 @@ jobs:
           ghcr.io/keecon/open-telemetry:tomcat9-jdk11
           ghcr.io/keecon/open-telemetry:1-tomcat9-jdk11
         build-args:
-          OTEL_VERSION=${{ secrets.OTEL_VERSION }}
+          OTEL_VERSION=${{ env.OTEL_VERSION }}
