@@ -2,11 +2,12 @@ FROM eclipse-temurin:17-alpine
 
 LABEL org.opencontainers.image.source https://github.com/keecon/docker-images
 
-ARG INSTALL_URL=https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar
+ARG OTEL_VERSION=v1.32.1
+ARG OTEL_INSTALL_URL=https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/${OTEL_VERSION}/opentelemetry-javaagent.jar
 
 RUN apk add --update curl \
     && mkdir -p /otel \
     && chmod -R o+x /otel \
-    && curl -SL ${INSTALL_URL} -o /otel/opentelemetry-javaagent.jar \
+    && curl -SL ${OTEL_INSTALL_URL} -o /otel/opentelemetry-javaagent.jar \
     && apk del curl \
     && rm /var/cache/apk/*
