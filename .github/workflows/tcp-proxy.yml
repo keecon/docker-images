@@ -6,6 +6,7 @@ on:
     - main
     paths:
     - 'tcp-proxy/**'
+    - '.github/workflows/tcp-proxy.yml'
 
 jobs:
   tcp-proxy:

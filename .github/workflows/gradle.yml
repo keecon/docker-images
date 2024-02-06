@@ -6,6 +6,7 @@ on:
     - main
     paths:
     - 'gradle/**'
+    - '.github/workflows/gradle.yml'
 
 jobs:
   gradle:

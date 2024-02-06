@@ -6,6 +6,7 @@ on:
     - main
     paths:
     - 'open-telemetry/**'
+    - '.github/workflows/open-telemetry.yml'
 
 jobs:
   open-telemetry-jdk21:
