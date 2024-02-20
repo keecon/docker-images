@@ -5,6 +5,7 @@
 [![node](https://github.com/keecon/docker-images/actions/workflows/node.yml/badge.svg)](https://github.com/keecon/docker-images/actions/workflows/node.yml)
 [![open-telemetry](https://github.com/keecon/docker-images/actions/workflows/open-telemetry.yml/badge.svg)](https://github.com/keecon/docker-images/actions/workflows/open-telemetry.yml)
 [![postgres](https://github.com/keecon/docker-images/actions/workflows/postgres.yml/badge.svg)](https://github.com/keecon/docker-images/actions/workflows/postgres.yml)
+[![mssql](https://github.com/keecon/docker-images/actions/workflows/mssql.yml/badge.svg)](https://github.com/keecon/docker-images/actions/workflows/mssql.yml)
 [![tcp-proxy](https://github.com/keecon/docker-images/actions/workflows/tcp-proxy.yml/badge.svg)](https://github.com/keecon/docker-images/actions/workflows/gradle.yml)
 
 project docker base images
@@ -20,5 +21,7 @@ project docker base images
 [![node](https://ghcr-badge.deta.dev/keecon/node/tags?trim=major&label=node)](https://github.com/orgs/keecon/packages/container/package/node)
 
 [![postgres](https://ghcr-badge.deta.dev/keecon/postgres/tags?trim=major&label=postgres)](https://github.com/orgs/keecon/packages/container/package/postgres)
+
+[![mssql](https://ghcr-badge.deta.dev/keecon/mssql/tags?trim=major&label=mssql)](https://github.com/orgs/keecon/packages/container/package/mssql)
 
 [![tcp-proxy](https://ghcr-badge.deta.dev/keecon/tcp-proxy/tags?trim=major&label=tcp-proxy)](https://github.com/orgs/keecon/packages/container/package/tcp-proxy)
