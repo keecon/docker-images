@@ -24,7 +24,7 @@ jobs:
       with:
         push: true
         context: mssql
-        platforms: linux/amd64,linux/arm64
+        platforms: linux/amd64
         tags: |
           ghcr.io/keecon/mssql:2017
           ghcr.io/keecon/mssql:2017-CU31
