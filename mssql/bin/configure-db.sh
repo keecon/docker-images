@@ -29,6 +29,14 @@ if [ $DBSTATUS -ne 0 ] || [ $ERRCODE -ne 0 ]; then
 	exit 1
 fi
 
-# Run the setup script to create the DB and the schema in the DB
 echo "starting sqlcmd user setup script ..."
+
+# Run the setup script to create the DB and the schema in the DB
 /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $MSSQL_SA_PASSWORD -d master -i /usr/local/mssql/init.d/setup.sql
+ERRCODE=$?
+if [ $ERRCODE -ne 0 ]; then
+	exit 1
+fi
+
+echo "setup success. shutdown server ..."
+/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $MSSQL_SA_PASSWORD -d master -Q "SHUTDOWN WITH NOWAIT"
