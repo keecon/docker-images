@@ -5,18 +5,22 @@
 # and that system and user databases return "0" which means all databases are in an "online" state
 # https://docs.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-databases-transact-sql?view=sql-server-2017
 
-DBSTATUS=1
-ERRCODE=1
-i=0
+declare -i DBSTATUS=1
+declare -i ERRCODE=1
+declare -i TIME=0
 
 echo "starting configure-db.sh ..."
 
-while [[ $DBSTATUS -ne 0 ]] && [[ $i -lt 120 ]] && [[ $ERRCODE -ne 0 ]]; do
+while [[ $DBSTATUS -ne 0 ]] && [[ $TIME -lt 120 ]]; do
 	DBSTATUS=$(/opt/mssql-tools/bin/sqlcmd -S localhost -h -1 -t 1 -U sa -P $MSSQL_SA_PASSWORD -i /usr/local/mssql/init.d/check-init.sql)
 	ERRCODE=$?
-	echo "DBSTATUS: $DBSTATUS, ERRCODE: $ERRCODE, TIME: $i"
+	echo "DBSTATUS: $DBSTATUS, ERRCODE: $ERRCODE, TIME: $TIME"
 
-	i=${i+5}
+	TIME=${TIME+5}
+	if [ $ERRCODE -ne 0 ]; then
+		DBSTATUS=$ERRCODE
+	fi
+
 	sleep 5
 done
 
