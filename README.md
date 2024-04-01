@@ -8,7 +8,7 @@
 [![mssql](https://github.com/keecon/docker-images/actions/workflows/mssql.yml/badge.svg)](https://github.com/keecon/docker-images/actions/workflows/mssql.yml)
 [![tcp-proxy](https://github.com/keecon/docker-images/actions/workflows/tcp-proxy.yml/badge.svg)](https://github.com/keecon/docker-images/actions/workflows/gradle.yml)
 
-project docker base images
+### project docker base images
 
 [![gradle](https://ghcr-badge.deta.dev/keecon/gradle/tags?trim=major&label=gradle)](https://github.com/orgs/keecon/packages/container/package/gradle)
 
@@ -25,3 +25,7 @@ project docker base images
 [![mssql](https://ghcr-badge.deta.dev/keecon/mssql/tags?trim=major&label=mssql)](https://github.com/orgs/keecon/packages/container/package/mssql)
 
 [![tcp-proxy](https://ghcr-badge.deta.dev/keecon/tcp-proxy/tags?trim=major&label=tcp-proxy)](https://github.com/orgs/keecon/packages/container/package/tcp-proxy)
+
+### public docker base images
+
+[![docker:lipanski/docker-static-website](https://img.shields.io/docker/v/lipanski/docker-static-website?logo=docker&label=lipanski%2Fdocker-static-website)](https://hub.docker.com/r/lipanski/docker-static-website/tags)
