@@ -1,3 +1,3 @@
 SET NOCOUNT ON;
 
-Select SUM(state) from sys.databases;
+SELECT SUM(state) FROM sys.databases;
