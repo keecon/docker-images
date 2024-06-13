@@ -26,6 +26,6 @@ jobs:
         context: mssql
         platforms: linux/amd64
         tags: |
-          ghcr.io/keecon/mssql:2017
-          ghcr.io/keecon/mssql:2017-CU31
-          ghcr.io/keecon/mssql:2017-CU31-ubuntu-18.04
+          ghcr.io/keecon/mssql:2019
+          ghcr.io/keecon/mssql:2019-CU26
+          ghcr.io/keecon/mssql:2019-CU26-ubuntu-20.04

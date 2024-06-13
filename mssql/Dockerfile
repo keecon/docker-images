@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/mssql/server:2017-CU31-ubuntu-18.04
+FROM mcr.microsoft.com/mssql/server:2019-CU26-ubuntu-20.04
 
 WORKDIR /usr/local/mssql
 
