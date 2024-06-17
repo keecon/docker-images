@@ -9,7 +9,7 @@ on:
     - '.github/workflows/open-telemetry-ffmpeg.yml'
 
 env:
-  OTEL_VERSION: v1.33.1
+  OTEL_VERSION: v1.33.3
   FFMPEG_VERSION: 6.1.1
 
 jobs:

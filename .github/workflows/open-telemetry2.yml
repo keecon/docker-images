@@ -9,7 +9,7 @@ on:
     - '.github/workflows/open-telemetry2.yml'
 
 env:
-  OTEL_VERSION: v2.2.0
+  OTEL_VERSION: v2.4.0
 
 jobs:
   open-telemetry2-jdk21:
