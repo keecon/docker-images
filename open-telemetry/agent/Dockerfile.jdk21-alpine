@@ -1,13 +1,13 @@
-FROM eclipse-temurin:17
+FROM eclipse-temurin:21-alpine
 
 LABEL org.opencontainers.image.source https://github.com/keecon/docker-images
 
 ARG OTEL_VERSION=v1.32.1
 ARG OTEL_INSTALL_URL=https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/${OTEL_VERSION}/opentelemetry-javaagent.jar
 
-RUN apt-get update \
-    && apt-get install build-essential ca-certificates libasound2-dev libssl-dev wget -y
-
-RUN mkdir -p /otel \
+RUN apk add --update curl \
+    && mkdir -p /otel \
     && chmod -R o+x /otel \
-    && curl -SL ${OTEL_INSTALL_URL} -o /otel/opentelemetry-javaagent.jar
+    && curl -SL ${OTEL_INSTALL_URL} -o /otel/opentelemetry-javaagent.jar \
+    && apk del curl \
+    && rm /var/cache/apk/*

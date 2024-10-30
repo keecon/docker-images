@@ -1,4 +1,4 @@
-name: open-telemetry-ffmpeg
+name: open-telemetry-alpine-ffmpeg
 
 on:
   push:
@@ -6,14 +6,14 @@ on:
     - main
     paths:
     - 'open-telemetry/**'
-    - '.github/workflows/open-telemetry-ffmpeg.yml'
+    - '.github/workflows/open-telemetry-alpine-ffmpeg.yml'
 
 env:
   OTEL_VERSION: v1.33.3
   FFMPEG_VERSION: 6.1.1
 
 jobs:
-  open-telemetry-ffmpeg-jdk21:
+  open-telemetry-alpine-ffmpeg-jdk21:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -28,16 +28,16 @@ jobs:
       with:
         push: true
         context: open-telemetry/agent
-        file: open-telemetry/agent/Dockerfile.jdk21-ffmpeg
+        file: open-telemetry/agent/Dockerfile.jdk21-alpine-ffmpeg
         platforms: linux/amd64
         tags: |
-          ghcr.io/keecon/open-telemetry:jdk21-ffmpeg
-          ghcr.io/keecon/open-telemetry:1-jdk21-ffmpeg
+          ghcr.io/keecon/open-telemetry:jdk21-alpine-ffmpeg
+          ghcr.io/keecon/open-telemetry:1-jdk21-alpine-ffmpeg
         build-args: |
           OTEL_VERSION=${{ env.OTEL_VERSION }}
           FFMPEG_VERSION=${{ env.FFMPEG_VERSION }}
 
-  open-telemetry-ffmpeg-jdk17:
+  open-telemetry-alpine-ffmpeg-jdk17:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -52,11 +52,11 @@ jobs:
       with:
         push: true
         context: open-telemetry/agent
-        file: open-telemetry/agent/Dockerfile.jdk17-ffmpeg
+        file: open-telemetry/agent/Dockerfile.jdk17-alpine-ffmpeg
         platforms: linux/amd64
         tags: |
-          ghcr.io/keecon/open-telemetry:jdk17-ffmpeg
-          ghcr.io/keecon/open-telemetry:1-jdk17-ffmpeg
+          ghcr.io/keecon/open-telemetry:jdk17-alpine-ffmpeg
+          ghcr.io/keecon/open-telemetry:1-jdk17-alpine-ffmpeg
         build-args: |
           OTEL_VERSION=${{ env.OTEL_VERSION }}
           FFMPEG_VERSION=${{ env.FFMPEG_VERSION }}
