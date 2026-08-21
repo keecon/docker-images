@@ -6,6 +6,10 @@ on:
     - main
     paths:
     - 'open-telemetry/**'
+    - '!open-telemetry/agent/Dockerfile.jdk25'
+    - '!open-telemetry/agent/Dockerfile.jdk25-alpine'
+    - '!open-telemetry/agent/Dockerfile.jdk25-ffmpeg'
+    - '!open-telemetry/agent/test-jdk25-image.sh'
     - '.github/workflows/open-telemetry2.yml'
 
 env:
