@@ -1,6 +1,15 @@
-name: open-telemetry25-candidate
+name: open-telemetry25
 
 on:
+  push:
+    branches:
+    - main
+    paths:
+    - 'open-telemetry/agent/Dockerfile.jdk25'
+    - 'open-telemetry/agent/Dockerfile.jdk25-alpine'
+    - 'open-telemetry/agent/Dockerfile.jdk25-ffmpeg'
+    - 'open-telemetry/agent/test-jdk25-image.sh'
+    - '.github/workflows/open-telemetry25.yml'
   pull_request:
     paths:
     - 'open-telemetry/agent/Dockerfile.jdk25'
@@ -28,11 +37,11 @@ jobs:
       matrix:
         include:
         - dockerfile: open-telemetry/agent/Dockerfile.jdk25
-          tag: 2.31.0-jdk25-r1
+          tag: 2.31.0-jdk25
         - dockerfile: open-telemetry/agent/Dockerfile.jdk25-alpine
-          tag: 2.31.0-jdk25-alpine-r1
+          tag: 2.31.0-jdk25-alpine
         - dockerfile: open-telemetry/agent/Dockerfile.jdk25-ffmpeg
-          tag: 2.31.0-jdk25-ffmpeg-r1
+          tag: 2.31.0-jdk25-ffmpeg
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
     - uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3
@@ -68,9 +77,9 @@ jobs:
 
   publish:
     if: >-
-      github.event_name == 'workflow_dispatch' &&
-      inputs.publish &&
-      github.ref == 'refs/heads/main'
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'push' ||
+      (github.event_name == 'workflow_dispatch' && inputs.publish))
     needs: verify
     runs-on: ubuntu-latest
     strategy:
@@ -78,11 +87,11 @@ jobs:
       matrix:
         include:
         - dockerfile: open-telemetry/agent/Dockerfile.jdk25
-          tag: 2.31.0-jdk25-r1
+          tag: 2.31.0-jdk25
         - dockerfile: open-telemetry/agent/Dockerfile.jdk25-alpine
-          tag: 2.31.0-jdk25-alpine-r1
+          tag: 2.31.0-jdk25-alpine
         - dockerfile: open-telemetry/agent/Dockerfile.jdk25-ffmpeg
-          tag: 2.31.0-jdk25-ffmpeg-r1
+          tag: 2.31.0-jdk25-ffmpeg
     steps:
     - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
     - uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3
