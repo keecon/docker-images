@@ -1,4 +1,4 @@
-name: open-telemetry
+name: open-telemetry-v1
 
 on:
   push:
@@ -9,216 +9,231 @@ on:
     - '!open-telemetry/agent/Dockerfile.jdk25'
     - '!open-telemetry/agent/Dockerfile.jdk25-alpine'
     - '!open-telemetry/agent/Dockerfile.jdk25-ffmpeg'
-    - '!open-telemetry/agent/test-jdk25-image.sh'
     - '.github/workflows/open-telemetry.yml'
+  pull_request:
+    paths:
+    - 'open-telemetry/**'
+    - '!open-telemetry/agent/Dockerfile.jdk25'
+    - '!open-telemetry/agent/Dockerfile.jdk25-alpine'
+    - '!open-telemetry/agent/Dockerfile.jdk25-ffmpeg'
+    - '.github/workflows/open-telemetry.yml'
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish verified OpenTelemetry v1 images to GHCR
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
 
 env:
-  OTEL_VERSION: v1.33.6
+  OTEL_VERSION: 1.33.6
+  OTEL_SHA256: 055c4fe4c67b0eed944d09e4e130d79255ad226929d11cdc71286d6ba67e4fdb
 
 jobs:
-  open-telemetry-jdk21:
+  verify:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk11
+          java_base_tag: 11.0.32_9-jdk-alpine
+          tag_suffix: jdk11
+          platforms: linux/amd64
+          java_major: 11
+          java_kind: jdk
+          variant: alpine
+          max_size_bytes: 450000000
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk17
+          java_base_tag: 17.0.20_8-jdk-noble
+          tag_suffix: jdk17
+          java_major: 17
+          java_kind: jdk
+          variant: plain
+          max_size_bytes: 550000000
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk17-alpine
+          java_base_tag: 17.0.20_8-jdk-alpine
+          tag_suffix: jdk17-alpine
+          platforms: linux/amd64
+          java_major: 17
+          java_kind: jdk
+          variant: alpine
+          max_size_bytes: 450000000
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk17-ffmpeg
+          java_base_tag: 17.0.20_8-jdk-noble
+          tag_suffix: jdk17-ffmpeg
+          java_major: 17
+          java_kind: jdk
+          variant: ffmpeg
+          max_size_bytes: 1000000000
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk21
+          java_base_tag: 21.0.12_8-jdk-noble
+          tag_suffix: jdk21
+          java_major: 21
+          java_kind: jdk
+          variant: plain
+          max_size_bytes: 600000000
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk21-alpine
+          java_base_tag: 21.0.12_8-jdk-alpine
+          tag_suffix: jdk21-alpine
+          java_major: 21
+          java_kind: jdk
+          variant: alpine
+          max_size_bytes: 450000000
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk21-ffmpeg
+          java_base_tag: 21.0.12_8-jdk-noble
+          tag_suffix: jdk21-ffmpeg
+          java_major: 21
+          java_kind: jdk
+          variant: ffmpeg
+          max_size_bytes: 1000000000
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk21
+          java_base_tag: 21.0.12_8-jre-noble
+          tag_suffix: jre21
+          java_major: 21
+          java_kind: jre
+          variant: plain
+          max_size_bytes: 350000000
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk21-alpine
+          java_base_tag: 21.0.12_8-jre-alpine
+          tag_suffix: jre21-alpine
+          java_major: 21
+          java_kind: jre
+          variant: alpine
+          max_size_bytes: 300000000
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk21-ffmpeg
+          java_base_tag: 21.0.12_8-jre-noble
+          tag_suffix: jre21-ffmpeg
+          java_major: 21
+          java_kind: jre
+          variant: ffmpeg
+          max_size_bytes: 800000000
+        - dockerfile: open-telemetry/agent/Dockerfile.tomcat10.jdk17
+          java_base_tag: 10.1.59-jdk17-temurin-noble
+          tag_suffix: tomcat10-jdk17
+          java_major: 17
+          java_kind: jdk
+          variant: tomcat
+          max_size_bytes: 700000000
+        - dockerfile: open-telemetry/agent/Dockerfile.tomcat9.jdk11
+          java_base_tag: 9.0.121-jdk11-temurin-noble
+          tag_suffix: tomcat9-jdk11
+          java_major: 11
+          java_kind: jdk
+          variant: tomcat
+          max_size_bytes: 700000000
     steps:
-    - uses: actions/checkout@v4
-    - uses: docker/setup-qemu-action@v3
-    - uses: docker/setup-buildx-action@v3
-    - uses: docker/login-action@v3
+    - uses: actions/checkout@v7
+    - uses: docker/setup-qemu-action@v4
+    - uses: docker/setup-buildx-action@v4
+    - name: Build local smoke-test image
+      uses: docker/build-push-action@v7
       with:
-        registry: ghcr.io
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    - uses: docker/build-push-action@v5
-      with:
-        push: true
         context: open-telemetry/agent
-        file: open-telemetry/agent/Dockerfile.jdk21
+        file: ${{ matrix.dockerfile }}
         platforms: linux/amd64
-        tags: |
-          ghcr.io/keecon/open-telemetry:jdk21
-          ghcr.io/keecon/open-telemetry:1-jdk21
-        build-args:
+        load: true
+        pull: true
+        tags: local/open-telemetry:${{ env.OTEL_VERSION }}-${{ matrix.tag_suffix }}
+        build-args: |
+          JAVA_BASE_TAG=${{ matrix.java_base_tag }}
           OTEL_VERSION=${{ env.OTEL_VERSION }}
+          OTEL_SHA256=${{ env.OTEL_SHA256 }}
+    - name: Test Java and OpenTelemetry Agent runtime
+      run: >-
+        ./open-telemetry/agent/test-java-image.sh
+        local/open-telemetry:${{ env.OTEL_VERSION }}-${{ matrix.tag_suffix }}
+        ${{ env.OTEL_VERSION }}
+        ${{ matrix.java_major }}
+        ${{ matrix.java_kind }}
+        ${{ matrix.variant }}
+        ${{ matrix.max_size_bytes }}
+    - name: Build multi-architecture candidate
+      uses: docker/build-push-action@v7
+      with:
+        context: open-telemetry/agent
+        file: ${{ matrix.dockerfile }}
+        platforms: ${{ matrix.platforms || 'linux/amd64,linux/arm64' }}
+        pull: true
+        build-args: |
+          JAVA_BASE_TAG=${{ matrix.java_base_tag }}
+          OTEL_VERSION=${{ env.OTEL_VERSION }}
+          OTEL_SHA256=${{ env.OTEL_SHA256 }}
 
-  open-telemetry-jdk21-alpine:
+  publish:
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'push' ||
+      (github.event_name == 'workflow_dispatch' && inputs.publish))
+    needs: verify
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk11
+          java_base_tag: 11.0.32_9-jdk-alpine
+          tag_suffix: jdk11
+          platforms: linux/amd64
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk17
+          java_base_tag: 17.0.20_8-jdk-noble
+          tag_suffix: jdk17
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk17-alpine
+          java_base_tag: 17.0.20_8-jdk-alpine
+          tag_suffix: jdk17-alpine
+          platforms: linux/amd64
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk17-ffmpeg
+          java_base_tag: 17.0.20_8-jdk-noble
+          tag_suffix: jdk17-ffmpeg
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk21
+          java_base_tag: 21.0.12_8-jdk-noble
+          tag_suffix: jdk21
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk21-alpine
+          java_base_tag: 21.0.12_8-jdk-alpine
+          tag_suffix: jdk21-alpine
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk21-ffmpeg
+          java_base_tag: 21.0.12_8-jdk-noble
+          tag_suffix: jdk21-ffmpeg
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk21
+          java_base_tag: 21.0.12_8-jre-noble
+          tag_suffix: jre21
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk21-alpine
+          java_base_tag: 21.0.12_8-jre-alpine
+          tag_suffix: jre21-alpine
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk21-ffmpeg
+          java_base_tag: 21.0.12_8-jre-noble
+          tag_suffix: jre21-ffmpeg
+        - dockerfile: open-telemetry/agent/Dockerfile.tomcat10.jdk17
+          java_base_tag: 10.1.59-jdk17-temurin-noble
+          tag_suffix: tomcat10-jdk17
+        - dockerfile: open-telemetry/agent/Dockerfile.tomcat9.jdk11
+          java_base_tag: 9.0.121-jdk11-temurin-noble
+          tag_suffix: tomcat9-jdk11
     steps:
-    - uses: actions/checkout@v4
-    - uses: docker/setup-qemu-action@v3
-    - uses: docker/setup-buildx-action@v3
-    - uses: docker/login-action@v3
+    - uses: actions/checkout@v7
+    - uses: docker/setup-qemu-action@v4
+    - uses: docker/setup-buildx-action@v4
+    - uses: docker/login-action@v4
       with:
         registry: ghcr.io
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-    - uses: docker/build-push-action@v5
+    - name: Build and publish OpenTelemetry v1 image after verification
+      uses: docker/build-push-action@v7
       with:
-        push: true
         context: open-telemetry/agent
-        file: open-telemetry/agent/Dockerfile.jdk21-alpine
-        platforms: linux/amd64
-        tags: |
-          ghcr.io/keecon/open-telemetry:jdk21-alpine
-          ghcr.io/keecon/open-telemetry:1-jdk21-alpine
-        build-args:
-          OTEL_VERSION=${{ env.OTEL_VERSION }}
-
-  open-telemetry-jdk21-ffmpeg:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: docker/setup-qemu-action@v3
-    - uses: docker/setup-buildx-action@v3
-    - uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    - uses: docker/build-push-action@v5
-      with:
+        file: ${{ matrix.dockerfile }}
+        platforms: ${{ matrix.platforms || 'linux/amd64,linux/arm64' }}
+        pull: true
         push: true
-        context: open-telemetry/agent
-        file: open-telemetry/agent/Dockerfile.jdk21-ffmpeg
-        platforms: linux/amd64
         tags: |
-          ghcr.io/keecon/open-telemetry:jdk21-ffmpeg
-          ghcr.io/keecon/open-telemetry:1-jdk21-ffmpeg
-        build-args:
+          ghcr.io/keecon/open-telemetry:${{ env.OTEL_VERSION }}-${{ matrix.tag_suffix }}
+          ghcr.io/keecon/open-telemetry:1-${{ matrix.tag_suffix }}
+          ghcr.io/keecon/open-telemetry:${{ matrix.tag_suffix }}
+        build-args: |
+          JAVA_BASE_TAG=${{ matrix.java_base_tag }}
           OTEL_VERSION=${{ env.OTEL_VERSION }}
-
-  open-telemetry-jdk17:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: docker/setup-qemu-action@v3
-    - uses: docker/setup-buildx-action@v3
-    - uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    - uses: docker/build-push-action@v5
-      with:
-        push: true
-        context: open-telemetry/agent
-        file: open-telemetry/agent/Dockerfile.jdk17
-        platforms: linux/amd64
-        tags: |
-          ghcr.io/keecon/open-telemetry:jdk17
-          ghcr.io/keecon/open-telemetry:1-jdk17
-        build-args:
-          OTEL_VERSION=${{ env.OTEL_VERSION }}
-
-  open-telemetry-jdk17-alpine:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: docker/setup-qemu-action@v3
-    - uses: docker/setup-buildx-action@v3
-    - uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    - uses: docker/build-push-action@v5
-      with:
-        push: true
-        context: open-telemetry/agent
-        file: open-telemetry/agent/Dockerfile.jdk17-alpine
-        platforms: linux/amd64
-        tags: |
-          ghcr.io/keecon/open-telemetry:jdk17-alpine
-          ghcr.io/keecon/open-telemetry:1-jdk17-alpine
-        build-args:
-          OTEL_VERSION=${{ env.OTEL_VERSION }}
-
-  open-telemetry-jdk17-ffmpeg:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: docker/setup-qemu-action@v3
-    - uses: docker/setup-buildx-action@v3
-    - uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    - uses: docker/build-push-action@v5
-      with:
-        push: true
-        context: open-telemetry/agent
-        file: open-telemetry/agent/Dockerfile.jdk17-ffmpeg
-        platforms: linux/amd64
-        tags: |
-          ghcr.io/keecon/open-telemetry:jdk17-ffmpeg
-          ghcr.io/keecon/open-telemetry:1-jdk17-ffmpeg
-        build-args:
-          OTEL_VERSION=${{ env.OTEL_VERSION }}
-
-  open-telemetry-jdk11:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: docker/setup-qemu-action@v3
-    - uses: docker/setup-buildx-action@v3
-    - uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    - uses: docker/build-push-action@v5
-      with:
-        push: true
-        context: open-telemetry/agent
-        file: open-telemetry/agent/Dockerfile.jdk11
-        platforms: linux/amd64
-        tags: |
-          ghcr.io/keecon/open-telemetry:jdk11
-          ghcr.io/keecon/open-telemetry:1-jdk11
-        build-args:
-          OTEL_VERSION=${{ env.OTEL_VERSION }}
-
-  open-telemetry-tomcat10-jdk17:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: docker/setup-qemu-action@v3
-    - uses: docker/setup-buildx-action@v3
-    - uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    - uses: docker/build-push-action@v5
-      with:
-        push: true
-        context: open-telemetry/agent
-        file: open-telemetry/agent/Dockerfile.tomcat10.jdk17
-        platforms: linux/amd64,linux/arm64
-        tags: |
-          ghcr.io/keecon/open-telemetry:tomcat10-jdk17
-          ghcr.io/keecon/open-telemetry:1-tomcat10-jdk17
-        build-args:
-          OTEL_VERSION=${{ env.OTEL_VERSION }}
-
-  open-telemetry-tomcat9-jdk11:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: docker/setup-qemu-action@v3
-    - uses: docker/setup-buildx-action@v3
-    - uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    - uses: docker/build-push-action@v5
-      with:
-        push: true
-        context: open-telemetry/agent
-        file: open-telemetry/agent/Dockerfile.tomcat9.jdk11
-        platforms: linux/amd64,linux/arm64
-        tags: |
-          ghcr.io/keecon/open-telemetry:tomcat9-jdk11
-          ghcr.io/keecon/open-telemetry:1-tomcat9-jdk11
-        build-args:
-          OTEL_VERSION=${{ env.OTEL_VERSION }}
+          OTEL_SHA256=${{ env.OTEL_SHA256 }}

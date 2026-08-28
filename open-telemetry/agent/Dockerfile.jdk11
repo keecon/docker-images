@@ -1,13 +1,26 @@
-FROM eclipse-temurin:11-alpine
+ARG JAVA_BASE_TAG=11.0.32_9-jdk-alpine
+FROM eclipse-temurin:${JAVA_BASE_TAG}
 
-LABEL org.opencontainers.image.source https://github.com/keecon/docker-images
+ARG JAVA_BASE_TAG
+ARG OTEL_VERSION
+ARG OTEL_SHA256
+ARG OTEL_INSTALL_URL=https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v${OTEL_VERSION}/opentelemetry-javaagent.jar
 
-ARG OTEL_VERSION=v1.32.1
-ARG OTEL_INSTALL_URL=https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/${OTEL_VERSION}/opentelemetry-javaagent.jar
+LABEL org.opencontainers.image.source=https://github.com/keecon/docker-images
+LABEL org.opencontainers.image.version=${OTEL_VERSION}
+LABEL org.opencontainers.image.base.name=eclipse-temurin:${JAVA_BASE_TAG}
 
-RUN apk add --update curl \
-    && mkdir -p /otel \
-    && chmod -R o+x /otel \
-    && curl -SL ${OTEL_INSTALL_URL} -o /otel/opentelemetry-javaagent.jar \
-    && apk del curl \
-    && rm /var/cache/apk/*
+RUN test -n "${OTEL_VERSION}" \
+    && test -n "${OTEL_SHA256}" \
+    && apk upgrade --no-cache \
+    && apk add --no-cache --virtual .otel-download-deps curl \
+    && install -d -m 0755 /otel \
+    && curl --fail --show-error --silent --location --retry 3 \
+        "${OTEL_INSTALL_URL}" \
+        --output /otel/opentelemetry-javaagent.jar \
+    && echo "${OTEL_SHA256}  /otel/opentelemetry-javaagent.jar" | sha256sum --check \
+    && apk del .otel-download-deps
+
+RUN java -version \
+    && javac -version \
+    && OTEL_SDK_DISABLED=true java -Xshare:off -javaagent:/otel/opentelemetry-javaagent.jar -version

@@ -1,13 +1,31 @@
-FROM eclipse-temurin:21
+ARG JAVA_BASE_TAG=21.0.12_8-jdk-noble
+FROM eclipse-temurin:${JAVA_BASE_TAG}
 
-LABEL org.opencontainers.image.source https://github.com/keecon/docker-images
+ARG JAVA_BASE_TAG
+ARG OTEL_VERSION
+ARG OTEL_SHA256
+ARG OTEL_INSTALL_URL=https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v${OTEL_VERSION}/opentelemetry-javaagent.jar
 
-ARG OTEL_VERSION=v1.32.1
-ARG OTEL_INSTALL_URL=https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/${OTEL_VERSION}/opentelemetry-javaagent.jar
+LABEL org.opencontainers.image.source=https://github.com/keecon/docker-images
+LABEL org.opencontainers.image.version=${OTEL_VERSION}
+LABEL org.opencontainers.image.base.name=eclipse-temurin:${JAVA_BASE_TAG}
 
 RUN apt-get update \
-    && apt-get install build-essential ca-certificates libasound2-dev libssl-dev wget ffmpeg -y
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /otel \
-    && chmod -R o+x /otel \
-    && curl -SL ${OTEL_INSTALL_URL} -o /otel/opentelemetry-javaagent.jar
+RUN test -n "${OTEL_VERSION}" \
+    && test -n "${OTEL_SHA256}" \
+    && install -d -m 0755 /otel \
+    && curl --fail --show-error --silent --location --retry 3 \
+        "${OTEL_INSTALL_URL}" \
+        --output /otel/opentelemetry-javaagent.jar \
+    && echo "${OTEL_SHA256}  /otel/opentelemetry-javaagent.jar" | sha256sum --check \
+    && apt-get purge -y --auto-remove curl wget \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN java -version \
+    && if command -v javac >/dev/null 2>&1; then javac -version; fi \
+    && ffmpeg -version \
+    && ffprobe -version \
+    && OTEL_SDK_DISABLED=true java -Xshare:off -javaagent:/otel/opentelemetry-javaagent.jar -version
