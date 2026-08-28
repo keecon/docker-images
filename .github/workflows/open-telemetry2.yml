@@ -22,6 +22,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: open-telemetry-v2-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   OTEL_VERSION: 2.31.1
   OTEL_SHA256: bbf83c151b6400709e2f225bdd07a04f839d9d13b8b93464241333fd25d3e3ba

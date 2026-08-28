@@ -28,6 +28,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: open-telemetry-v1-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   OTEL_VERSION: 1.33.6
   OTEL_SHA256: 055c4fe4c67b0eed944d09e4e130d79255ad226929d11cdc71286d6ba67e4fdb
@@ -232,7 +236,6 @@ jobs:
         tags: |
           ghcr.io/keecon/open-telemetry:${{ env.OTEL_VERSION }}-${{ matrix.tag_suffix }}
           ghcr.io/keecon/open-telemetry:1-${{ matrix.tag_suffix }}
-          ghcr.io/keecon/open-telemetry:${{ matrix.tag_suffix }}
         build-args: |
           JAVA_BASE_TAG=${{ matrix.java_base_tag }}
           OTEL_VERSION=${{ env.OTEL_VERSION }}
