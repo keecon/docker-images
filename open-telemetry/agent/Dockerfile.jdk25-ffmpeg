@@ -23,7 +23,7 @@ RUN test -n "${OTEL_VERSION}" \
     && rm -rf /var/lib/apt/lists/*
 
 RUN java -version \
-    && javac -version \
+    && if command -v javac >/dev/null 2>&1; then javac -version; fi \
     && ffmpeg -version \
     && ffprobe -version \
     && OTEL_SDK_DISABLED=true java -Xshare:off -javaagent:/otel/opentelemetry-javaagent.jar -version

@@ -130,6 +130,27 @@ jobs:
           java_kind: jdk
           variant: ffmpeg
           max_size_bytes: 1000000000
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk25
+          java_base_tag: 25.0.4_7-jre-noble
+          tag_suffix: jre25
+          java_major: 25
+          java_kind: jre
+          variant: plain
+          max_size_bytes: 350000000
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk25-alpine
+          java_base_tag: 25.0.4_7-jre-alpine
+          tag_suffix: jre25-alpine
+          java_major: 25
+          java_kind: jre
+          variant: alpine
+          max_size_bytes: 300000000
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk25-ffmpeg
+          java_base_tag: 25.0.4_7-jre-noble
+          tag_suffix: jre25-ffmpeg
+          java_major: 25
+          java_kind: jre
+          variant: ffmpeg
+          max_size_bytes: 800000000
         - dockerfile: open-telemetry/agent/Dockerfile.tomcat10.jdk17
           java_base_tag: 10.1.59-jdk17-temurin-noble
           tag_suffix: tomcat10-jdk17
@@ -234,6 +255,15 @@ jobs:
         - dockerfile: open-telemetry/agent/Dockerfile.jdk25-ffmpeg
           java_base_tag: 25.0.4_7-jdk-noble
           tag_suffix: jdk25-ffmpeg
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk25
+          java_base_tag: 25.0.4_7-jre-noble
+          tag_suffix: jre25
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk25-alpine
+          java_base_tag: 25.0.4_7-jre-alpine
+          tag_suffix: jre25-alpine
+        - dockerfile: open-telemetry/agent/Dockerfile.jdk25-ffmpeg
+          java_base_tag: 25.0.4_7-jre-noble
+          tag_suffix: jre25-ffmpeg
         - dockerfile: open-telemetry/agent/Dockerfile.tomcat10.jdk17
           java_base_tag: 10.1.59-jdk17-temurin-noble
           tag_suffix: tomcat10-jdk17
