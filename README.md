@@ -32,6 +32,7 @@
 - JDK/JRE는 같은 Temurin 패치·빌드 버전으로 고정하고 함께 갱신합니다. JRE는 해당 LTS의 Dockerfile을 재사용하며 `JAVA_BASE_TAG`로 선택합니다.
 - 현재 2.x의 JDK/JRE 동시 지원 대상은 Java 21과 25입니다. 기존 Java 11·17과 OpenTelemetry 1.x의 지원 범위는 유지합니다.
 - LTS 추가·갱신 시 Dockerfile 기본 태그와 워크플로의 검증·배포 매트릭스를 함께 수정합니다. 베이스 이미지의 대상 아키텍처 지원을 확인하고, 기존 런타임 검사(Java·Agent 버전, JDK의 `javac` 존재/JRE의 부재, 변형별 기능·크기)와 다중 아키텍처 빌드가 통과한 뒤 배포합니다.
+- FFmpeg 변형은 Ubuntu Noble을 유지합니다. 2026-09-30 현재 [CVE-2026-93990의 Noble `expat` 상태](https://ubuntu.com/security/CVE-2026-93990)는 `Needs evaluation`입니다. Ubuntu 보안 패키지가 이 CVE를 수정했다고 확인되면 OpenTelemetry 1.x·2.x의 JDK/JRE FFmpeg 이미지를 다시 빌드하고 최종 이미지의 패키지 버전과 보안 공지를 대조합니다.
 
 ### public docker base images
 

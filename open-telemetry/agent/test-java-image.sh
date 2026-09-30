@@ -53,6 +53,12 @@ if ! output=$(docker run --rm -e OTEL_SDK_DISABLED=true "$image" sh -c '
     fi
 
     if command -v apk >/dev/null 2>&1; then
+        if apk info -e libexpat >/dev/null 2>&1 \
+            && ! apk info -e "libexpat>=2.8.5-r0" >/dev/null 2>&1; then
+            echo "libexpat must be at least 2.8.5-r0" >&2
+            exit 1
+        fi
+
         for package in build-base curl gcc g++ make linux-headers musl-dev openssl-dev; do
             if apk info -e "$package" >/dev/null 2>&1; then
                 echo "forbidden package is installed: $package" >&2
