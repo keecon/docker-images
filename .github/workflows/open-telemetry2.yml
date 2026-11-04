@@ -27,8 +27,8 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  OTEL_VERSION: 2.31.1
-  OTEL_SHA256: bbf83c151b6400709e2f225bdd07a04f839d9d13b8b93464241333fd25d3e3ba
+  OTEL_VERSION: 2.33.1
+  OTEL_SHA256: e43a270df53c6f423e0ab157be9c27ccc01d5dc3232e162fe54777573db2f149
 
 jobs:
   verify:
@@ -46,14 +46,14 @@ jobs:
           variant: alpine
           max_size_bytes: 450000000
         - dockerfile: open-telemetry/agent/Dockerfile.jdk17
-          java_base_tag: 17.0.20_8-jdk-noble
+          java_base_tag: 17.0.21_9-jdk-noble
           tag_suffix: jdk17
           java_major: 17
           java_kind: jdk
           variant: plain
           max_size_bytes: 550000000
         - dockerfile: open-telemetry/agent/Dockerfile.jdk17-alpine
-          java_base_tag: 17.0.20_8-jdk-alpine
+          java_base_tag: 17.0.21_9-jdk-alpine
           tag_suffix: jdk17-alpine
           platforms: linux/amd64
           java_major: 17
@@ -61,98 +61,98 @@ jobs:
           variant: alpine
           max_size_bytes: 450000000
         - dockerfile: open-telemetry/agent/Dockerfile.jdk17-ffmpeg
-          java_base_tag: 17.0.20_8-jdk-noble
+          java_base_tag: 17.0.21_9-jdk-noble
           tag_suffix: jdk17-ffmpeg
           java_major: 17
           java_kind: jdk
           variant: ffmpeg
           max_size_bytes: 1000000000
         - dockerfile: open-telemetry/agent/Dockerfile.jdk21
-          java_base_tag: 21.0.12_8-jdk-noble
+          java_base_tag: 21.0.13_9-jdk-noble
           tag_suffix: jdk21
           java_major: 21
           java_kind: jdk
           variant: plain
           max_size_bytes: 600000000
         - dockerfile: open-telemetry/agent/Dockerfile.jdk21-alpine
-          java_base_tag: 21.0.12_8-jdk-alpine
+          java_base_tag: 21.0.13_9-jdk-alpine
           tag_suffix: jdk21-alpine
           java_major: 21
           java_kind: jdk
           variant: alpine
           max_size_bytes: 450000000
         - dockerfile: open-telemetry/agent/Dockerfile.jdk21-ffmpeg
-          java_base_tag: 21.0.12_8-jdk-noble
+          java_base_tag: 21.0.13_9-jdk-noble
           tag_suffix: jdk21-ffmpeg
           java_major: 21
           java_kind: jdk
           variant: ffmpeg
           max_size_bytes: 1000000000
         - dockerfile: open-telemetry/agent/Dockerfile.jdk21
-          java_base_tag: 21.0.12_8-jre-noble
+          java_base_tag: 21.0.13_9-jre-noble
           tag_suffix: jre21
           java_major: 21
           java_kind: jre
           variant: plain
           max_size_bytes: 350000000
         - dockerfile: open-telemetry/agent/Dockerfile.jdk21-alpine
-          java_base_tag: 21.0.12_8-jre-alpine
+          java_base_tag: 21.0.13_9-jre-alpine
           tag_suffix: jre21-alpine
           java_major: 21
           java_kind: jre
           variant: alpine
           max_size_bytes: 300000000
         - dockerfile: open-telemetry/agent/Dockerfile.jdk21-ffmpeg
-          java_base_tag: 21.0.12_8-jre-noble
+          java_base_tag: 21.0.13_9-jre-noble
           tag_suffix: jre21-ffmpeg
           java_major: 21
           java_kind: jre
           variant: ffmpeg
           max_size_bytes: 800000000
         - dockerfile: open-telemetry/agent/Dockerfile.jdk25
-          java_base_tag: 25.0.4_7-jdk-noble
+          java_base_tag: 25.0.5_8-jdk-noble
           tag_suffix: jdk25
           java_major: 25
           java_kind: jdk
           variant: plain
           max_size_bytes: 600000000
         - dockerfile: open-telemetry/agent/Dockerfile.jdk25-alpine
-          java_base_tag: 25.0.4_7-jdk-alpine
+          java_base_tag: 25.0.5_8-jdk-alpine
           tag_suffix: jdk25-alpine
           java_major: 25
           java_kind: jdk
           variant: alpine
           max_size_bytes: 450000000
         - dockerfile: open-telemetry/agent/Dockerfile.jdk25-ffmpeg
-          java_base_tag: 25.0.4_7-jdk-noble
+          java_base_tag: 25.0.5_8-jdk-noble
           tag_suffix: jdk25-ffmpeg
           java_major: 25
           java_kind: jdk
           variant: ffmpeg
           max_size_bytes: 1000000000
         - dockerfile: open-telemetry/agent/Dockerfile.jdk25
-          java_base_tag: 25.0.4_7-jre-noble
+          java_base_tag: 25.0.5_8-jre-noble
           tag_suffix: jre25
           java_major: 25
           java_kind: jre
           variant: plain
           max_size_bytes: 350000000
         - dockerfile: open-telemetry/agent/Dockerfile.jdk25-alpine
-          java_base_tag: 25.0.4_7-jre-alpine
+          java_base_tag: 25.0.5_8-jre-alpine
           tag_suffix: jre25-alpine
           java_major: 25
           java_kind: jre
           variant: alpine
           max_size_bytes: 300000000
         - dockerfile: open-telemetry/agent/Dockerfile.jdk25-ffmpeg
-          java_base_tag: 25.0.4_7-jre-noble
+          java_base_tag: 25.0.5_8-jre-noble
           tag_suffix: jre25-ffmpeg
           java_major: 25
           java_kind: jre
           variant: ffmpeg
           max_size_bytes: 800000000
         - dockerfile: open-telemetry/agent/Dockerfile.tomcat10.jdk17
-          java_base_tag: 10.1.59-jdk17-temurin-noble
+          java_base_tag: 10.1.61-jdk17-temurin-noble
           tag_suffix: tomcat10-jdk17
           java_major: 17
           java_kind: jdk
@@ -219,53 +219,53 @@ jobs:
           tag_suffix: jdk11
           platforms: linux/amd64
         - dockerfile: open-telemetry/agent/Dockerfile.jdk17
-          java_base_tag: 17.0.20_8-jdk-noble
+          java_base_tag: 17.0.21_9-jdk-noble
           tag_suffix: jdk17
         - dockerfile: open-telemetry/agent/Dockerfile.jdk17-alpine
-          java_base_tag: 17.0.20_8-jdk-alpine
+          java_base_tag: 17.0.21_9-jdk-alpine
           tag_suffix: jdk17-alpine
           platforms: linux/amd64
         - dockerfile: open-telemetry/agent/Dockerfile.jdk17-ffmpeg
-          java_base_tag: 17.0.20_8-jdk-noble
+          java_base_tag: 17.0.21_9-jdk-noble
           tag_suffix: jdk17-ffmpeg
         - dockerfile: open-telemetry/agent/Dockerfile.jdk21
-          java_base_tag: 21.0.12_8-jdk-noble
+          java_base_tag: 21.0.13_9-jdk-noble
           tag_suffix: jdk21
         - dockerfile: open-telemetry/agent/Dockerfile.jdk21-alpine
-          java_base_tag: 21.0.12_8-jdk-alpine
+          java_base_tag: 21.0.13_9-jdk-alpine
           tag_suffix: jdk21-alpine
         - dockerfile: open-telemetry/agent/Dockerfile.jdk21-ffmpeg
-          java_base_tag: 21.0.12_8-jdk-noble
+          java_base_tag: 21.0.13_9-jdk-noble
           tag_suffix: jdk21-ffmpeg
         - dockerfile: open-telemetry/agent/Dockerfile.jdk21
-          java_base_tag: 21.0.12_8-jre-noble
+          java_base_tag: 21.0.13_9-jre-noble
           tag_suffix: jre21
         - dockerfile: open-telemetry/agent/Dockerfile.jdk21-alpine
-          java_base_tag: 21.0.12_8-jre-alpine
+          java_base_tag: 21.0.13_9-jre-alpine
           tag_suffix: jre21-alpine
         - dockerfile: open-telemetry/agent/Dockerfile.jdk21-ffmpeg
-          java_base_tag: 21.0.12_8-jre-noble
+          java_base_tag: 21.0.13_9-jre-noble
           tag_suffix: jre21-ffmpeg
         - dockerfile: open-telemetry/agent/Dockerfile.jdk25
-          java_base_tag: 25.0.4_7-jdk-noble
+          java_base_tag: 25.0.5_8-jdk-noble
           tag_suffix: jdk25
         - dockerfile: open-telemetry/agent/Dockerfile.jdk25-alpine
-          java_base_tag: 25.0.4_7-jdk-alpine
+          java_base_tag: 25.0.5_8-jdk-alpine
           tag_suffix: jdk25-alpine
         - dockerfile: open-telemetry/agent/Dockerfile.jdk25-ffmpeg
-          java_base_tag: 25.0.4_7-jdk-noble
+          java_base_tag: 25.0.5_8-jdk-noble
           tag_suffix: jdk25-ffmpeg
         - dockerfile: open-telemetry/agent/Dockerfile.jdk25
-          java_base_tag: 25.0.4_7-jre-noble
+          java_base_tag: 25.0.5_8-jre-noble
           tag_suffix: jre25
         - dockerfile: open-telemetry/agent/Dockerfile.jdk25-alpine
-          java_base_tag: 25.0.4_7-jre-alpine
+          java_base_tag: 25.0.5_8-jre-alpine
           tag_suffix: jre25-alpine
         - dockerfile: open-telemetry/agent/Dockerfile.jdk25-ffmpeg
-          java_base_tag: 25.0.4_7-jre-noble
+          java_base_tag: 25.0.5_8-jre-noble
           tag_suffix: jre25-ffmpeg
         - dockerfile: open-telemetry/agent/Dockerfile.tomcat10.jdk17
-          java_base_tag: 10.1.59-jdk17-temurin-noble
+          java_base_tag: 10.1.61-jdk17-temurin-noble
           tag_suffix: tomcat10-jdk17
         - dockerfile: open-telemetry/agent/Dockerfile.tomcat9.jdk11
           java_base_tag: 9.0.121-jdk11-temurin-noble

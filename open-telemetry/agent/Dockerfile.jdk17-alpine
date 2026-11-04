@@ -1,4 +1,4 @@
-ARG JAVA_BASE_TAG=17.0.20_8-jdk-alpine
+ARG JAVA_BASE_TAG=17.0.21_9-jdk-alpine
 FROM eclipse-temurin:${JAVA_BASE_TAG}
 
 ARG JAVA_BASE_TAG

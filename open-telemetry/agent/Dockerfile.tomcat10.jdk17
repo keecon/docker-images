@@ -1,4 +1,4 @@
-ARG JAVA_BASE_TAG=10.1.59-jdk17-temurin-noble
+ARG JAVA_BASE_TAG=10.1.61-jdk17-temurin-noble
 FROM tomcat:${JAVA_BASE_TAG}
 
 ARG JAVA_BASE_TAG

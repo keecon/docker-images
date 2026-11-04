@@ -1,4 +1,4 @@
-ARG JAVA_BASE_TAG=25.0.4_7-jdk-noble
+ARG JAVA_BASE_TAG=25.0.5_8-jdk-noble
 FROM eclipse-temurin:${JAVA_BASE_TAG}
 
 ARG JAVA_BASE_TAG
