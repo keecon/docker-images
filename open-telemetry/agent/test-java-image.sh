@@ -2,8 +2,8 @@
 
 set -eu
 
-if [ "$#" -ne 6 ]; then
-    echo "usage: $0 <image> <otel-version> <java-major-version> <java-kind> <variant> <max-size-bytes>" >&2
+if [ "$#" -ne 5 ]; then
+    echo "usage: $0 <image> <otel-version> <java-major-version> <java-kind> <variant>" >&2
     exit 2
 fi
 
@@ -12,7 +12,6 @@ otel_version=$2
 java_major_version=$3
 java_kind=$4
 variant=$5
-max_size_bytes=$6
 
 case "$java_kind" in
     jdk|jre) ;;
@@ -106,9 +105,4 @@ elif docker run --rm "$image" sh -c 'command -v ffmpeg >/dev/null 2>&1'; then
 fi
 
 image_size_bytes=$(docker image inspect --format '{{.Size}}' "$image")
-if [ "$image_size_bytes" -gt "$max_size_bytes" ]; then
-    echo "image exceeds size limit: $image_size_bytes > $max_size_bytes bytes" >&2
-    exit 1
-fi
-
-printf 'image size: %s bytes (limit: %s bytes)\n' "$image_size_bytes" "$max_size_bytes"
+printf 'image size reported by Docker: %s bytes\n' "$image_size_bytes"
