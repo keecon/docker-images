@@ -22,35 +22,39 @@ class BuildJavaImagesTest(unittest.TestCase):
         test.chmod(0o755)
         self.env = dict(os.environ, PATH=f'{root}:{os.environ["PATH"]}', CALL_LOG=str(self.log), OTEL_VERSION='2.3.4', OTEL_SHA256='test')
 
-    def run_build(self, major, publish, fail_test='', fail_build=''):
-        return subprocess.run([str(self.script), str(major), f'{major}.0.1_2', publish], env=dict(self.env, FAIL_TEST=fail_test, FAIL_BUILD=fail_build or 'never-match'), capture_output=True, text=True)
+    def run_build(self, major, publish, fail_test='', fail_build='', variant='ffmpeg'):
+        return subprocess.run([str(self.script), str(major), f'{major}.0.1_2', publish, variant], env=dict(self.env, FAIL_TEST=fail_test, FAIL_BUILD=fail_build or 'never-match'), capture_output=True, text=True)
 
     def calls(self):
         return self.log.read_text().splitlines()
 
-    def test_all_variants_are_tested_before_publishing(self):
+    def test_each_variant_is_tested_before_publishing(self):
         for major in (17, 21, 25):
-            with self.subTest(major=major):
-                self.log.unlink(missing_ok=True)
-                self.assertEqual(self.run_build(major, 'true').returncode, 0)
-                calls = self.calls()
-                builds = [i for i, call in enumerate(calls) if call.startswith('docker buildx build ')]
-                tests = [i for i, call in enumerate(calls) if call.startswith('test ')]
-                pushes = [i for i, call in enumerate(calls) if call.startswith('docker push ')]
-                self.assertEqual(len(builds), 5)
-                self.assertEqual(len(tests), 9 if major == 17 else 10)
-                self.assertEqual(len(pushes), 10)
-                self.assertLess(max(tests), min(pushes))
-                for i in pushes:
-                    self.assertTrue(calls[i - 1].startswith('docker tag local/open-telemetry:2.3.4-'))
-                    self.assertEqual(calls[i - 1].split()[-1], calls[i].split()[-1])
-                    self.assertEqual(calls[i - 1].split()[-2].split('2.3.4-', 1)[1], calls[i].rsplit(':', 1)[1].split('-', 1)[1])
-                alpine = [calls[i] for i in builds if 'Dockerfile.alpine' in calls[i]]
-                self.assertEqual(len(alpine), 1)
-                self.assertIn(f'jre{major}-alpine', alpine[0])
-                self.assertFalse(any(f'jdk{major}-alpine' in call for call in calls))
-                self.assertTrue(all(('--platform linux/amd64 ' if major == 17 else '--platform linux/amd64,linux/arm64 ') in c for c in alpine))
-                self.assertTrue(any('linux/arm64' in calls[i] and 'distroless-ffmpeg' in calls[i] for i in tests))
+            for variant in ('distroless', 'jdk', 'jre', 'jre-alpine', 'ffmpeg'):
+                with self.subTest(major=major, variant=variant):
+                    self.log.unlink(missing_ok=True)
+                    self.assertEqual(self.run_build(major, 'true', variant=variant).returncode, 0)
+                    calls = self.calls()
+                    builds = [i for i, call in enumerate(calls) if call.startswith('docker buildx build ')]
+                    tests = [i for i, call in enumerate(calls) if call.startswith('test ')]
+                    pushes = [i for i, call in enumerate(calls) if call.startswith('docker push ')]
+                    self.assertEqual(len(builds), 1)
+                    self.assertEqual(len(tests), 1 if major == 17 and variant == 'jre-alpine' else 2)
+                    self.assertEqual(len(pushes), 2)
+                    self.assertLess(max(tests), min(pushes))
+                    for i in pushes:
+                        self.assertTrue(calls[i - 1].startswith('docker tag local/open-telemetry:2.3.4-'))
+                        self.assertEqual(calls[i - 1].split()[-1], calls[i].split()[-1])
+                        self.assertEqual(calls[i - 1].split()[-2].split('2.3.4-', 1)[1], calls[i].rsplit(':', 1)[1].split('-', 1)[1])
+                    if variant == 'jre-alpine':
+                        self.assertIn(f'jre{major}-alpine', calls[builds[0]])
+                        platforms = '--platform linux/amd64 ' if major == 17 else '--platform linux/amd64,linux/arm64 '
+                        self.assertIn(platforms, calls[builds[0]])
+                    self.assertFalse(any(f'jdk{major}-alpine' in call for call in calls))
+
+    def test_invalid_variant_is_rejected(self):
+        self.assertNotEqual(self.run_build(25, 'true', variant='jdk-alpine').returncode, 0)
+        self.assertFalse(self.log.exists())
 
     def test_failed_build_prevents_all_publication(self):
         self.assertNotEqual(self.run_build(25, 'true', fail_build='Dockerfile.ffmpeg').returncode, 0)
