@@ -10,6 +10,7 @@ on:
     - open-telemetry/agent/Dockerfile.ffmpeg
     - open-telemetry/agent/otel-v2.env
     - open-telemetry/agent/test-java-image.sh
+    - open-telemetry/agent/TestDistrolessFFmpeg.java
     - .github/workflows/open-telemetry2-jdk21.yml
   pull_request:
     paths:
@@ -19,6 +20,7 @@ on:
     - open-telemetry/agent/Dockerfile.ffmpeg
     - open-telemetry/agent/otel-v2.env
     - open-telemetry/agent/test-java-image.sh
+    - open-telemetry/agent/TestDistrolessFFmpeg.java
     - .github/workflows/open-telemetry2-jdk21.yml
   workflow_dispatch:
     inputs:
@@ -49,7 +51,7 @@ jobs:
           java_kind: jre
           variant: distroless
         - dockerfile: open-telemetry/agent/Dockerfile.default
-          java_base_tag: 21.0.13_9-jdk-noble
+          java_base_tag: 21.0.13_9-jdk-resolute
           tag_suffix: jdk21
           java_major: 21
           java_kind: jdk
@@ -60,14 +62,8 @@ jobs:
           java_major: 21
           java_kind: jdk
           variant: alpine
-        - dockerfile: open-telemetry/agent/Dockerfile.ffmpeg
-          java_base_tag: 21.0.13_9-jdk-noble
-          tag_suffix: jdk21-ffmpeg
-          java_major: 21
-          java_kind: jdk
-          variant: ffmpeg
         - dockerfile: open-telemetry/agent/Dockerfile.default
-          java_base_tag: 21.0.13_9-jre-noble
+          java_base_tag: 21.0.13_9-jre-resolute
           tag_suffix: jre21
           java_major: 21
           java_kind: jre
@@ -79,11 +75,11 @@ jobs:
           java_kind: jre
           variant: alpine
         - dockerfile: open-telemetry/agent/Dockerfile.ffmpeg
-          java_base_tag: 21.0.13_9-jre-noble
+          java_base_tag: gcr.io/distroless/java21-debian13:latest
           tag_suffix: jre21-ffmpeg
           java_major: 21
           java_kind: jre
-          variant: ffmpeg
+          variant: distroless-ffmpeg
     steps:
     - uses: actions/checkout@v7
     - name: Load OpenTelemetry version
@@ -138,22 +134,19 @@ jobs:
           java_base_tag: gcr.io/distroless/java21-debian13:latest
           tag_suffix: jre21-distroless
         - dockerfile: open-telemetry/agent/Dockerfile.default
-          java_base_tag: 21.0.13_9-jdk-noble
+          java_base_tag: 21.0.13_9-jdk-resolute
           tag_suffix: jdk21
         - dockerfile: open-telemetry/agent/Dockerfile.alpine
           java_base_tag: 21.0.13_9-jdk-alpine
           tag_suffix: jdk21-alpine
-        - dockerfile: open-telemetry/agent/Dockerfile.ffmpeg
-          java_base_tag: 21.0.13_9-jdk-noble
-          tag_suffix: jdk21-ffmpeg
         - dockerfile: open-telemetry/agent/Dockerfile.default
-          java_base_tag: 21.0.13_9-jre-noble
+          java_base_tag: 21.0.13_9-jre-resolute
           tag_suffix: jre21
         - dockerfile: open-telemetry/agent/Dockerfile.alpine
           java_base_tag: 21.0.13_9-jre-alpine
           tag_suffix: jre21-alpine
         - dockerfile: open-telemetry/agent/Dockerfile.ffmpeg
-          java_base_tag: 21.0.13_9-jre-noble
+          java_base_tag: gcr.io/distroless/java21-debian13:latest
           tag_suffix: jre21-ffmpeg
     steps:
     - uses: actions/checkout@v7

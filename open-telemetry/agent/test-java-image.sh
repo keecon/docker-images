@@ -22,14 +22,14 @@ case "$java_kind" in
 esac
 
 case "$variant" in
-    plain|alpine|ffmpeg|tomcat|distroless) ;;
+    plain|alpine|ffmpeg|tomcat|distroless|distroless-ffmpeg) ;;
     *)
         echo "unsupported variant: $variant" >&2
         exit 2
         ;;
 esac
 
-if [ "$variant" = distroless ]; then
+if [ "$variant" = distroless ] || [ "$variant" = distroless-ffmpeg ]; then
     output=$(docker run --rm --entrypoint java -e OTEL_SDK_DISABLED=true "$image" \
         -Xshare:off -javaagent:/otel/opentelemetry-javaagent.jar -version 2>&1) || {
         printf '%s\n' "$output" >&2
@@ -38,6 +38,15 @@ if [ "$variant" = distroless ]; then
     printf '%s\n' "$output"
     printf '%s\n' "$output" | grep --fixed-strings "openjdk version \"${java_major_version}." >/dev/null
     printf '%s\n' "$output" | grep --fixed-strings "opentelemetry-javaagent - version: ${otel_version}" >/dev/null
+    if [ "$variant" = distroless-ffmpeg ]; then
+        test_dir=$(mktemp -d)
+        trap 'rm -f "$test_dir/TestDistrolessFFmpeg.class"; rmdir "$test_dir"' EXIT
+        chmod 755 "$test_dir"
+        javac --release 17 -d "$test_dir" "$(dirname "$0")/TestDistrolessFFmpeg.java"
+        docker run --rm --network none --user 65532:65532 -e OTEL_SDK_DISABLED=true \
+            -v "$test_dir:/check:ro" --entrypoint java "$image" \
+            -Xshare:off -javaagent:/otel/opentelemetry-javaagent.jar -cp /check TestDistrolessFFmpeg
+    fi
     exit 0
 fi
 
@@ -46,6 +55,14 @@ if ! output=$(docker run --rm -e OTEL_SDK_DISABLED=true "$image" sh -c '
 
     java -version
     java -Xshare:off -javaagent:/otel/opentelemetry-javaagent.jar -version
+
+    if [ "'"$variant"'" = plain ]; then
+        . /etc/os-release
+        if [ "$ID" != ubuntu ] || [ "$VERSION_ID" != 26.04 ]; then
+            echo "expected Ubuntu 26.04 in the default image" >&2
+            exit 1
+        fi
+    fi
 
     if [ "'"$java_kind"'" = jdk ]; then
         javac -version

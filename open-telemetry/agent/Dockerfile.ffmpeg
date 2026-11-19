@@ -1,29 +1,58 @@
-ARG JAVA_BASE_TAG=25.0.5_8-jdk-noble
-FROM eclipse-temurin:${JAVA_BASE_TAG}
+ARG JAVA_BASE_TAG=gcr.io/distroless/java25-debian13:latest
+FROM ${JAVA_BASE_TAG} AS runtime
 
-ARG JAVA_BASE_TAG
+FROM curlimages/curl:8.23.0 AS download
 ARG OTEL_VERSION
 ARG OTEL_SHA256
 ARG OTEL_INSTALL_URL=https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v${OTEL_VERSION}/opentelemetry-javaagent.jar
-
-LABEL org.opencontainers.image.source=https://github.com/keecon/docker-images
-LABEL org.opencontainers.image.version=${OTEL_VERSION}
-LABEL org.opencontainers.image.base.name=eclipse-temurin:${JAVA_BASE_TAG}
-
 RUN test -n "${OTEL_VERSION}" \
     && test -n "${OTEL_SHA256}" \
-    && apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends curl ffmpeg \
-    && install -d -m 0755 /otel \
     && curl --fail --show-error --silent --location --retry 3 \
-        "${OTEL_INSTALL_URL}" \
-        --output /otel/opentelemetry-javaagent.jar \
-    && echo "${OTEL_SHA256}  /otel/opentelemetry-javaagent.jar" | sha256sum --check \
-    && apt-get purge -y --auto-remove curl wget \
-    && rm -rf /var/lib/apt/lists/*
+        "${OTEL_INSTALL_URL}" --output /tmp/opentelemetry-javaagent.jar \
+    && echo "${OTEL_SHA256}  /tmp/opentelemetry-javaagent.jar" | sha256sum -c
 
-RUN java -version \
-    && if command -v javac >/dev/null 2>&1; then javac -version; fi \
+FROM debian:13-slim AS packages
+RUN apt-get update -qq \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ffmpeg \
     && ffmpeg -version \
-    && ffprobe -version \
-    && OTEL_SDK_DISABLED=true java -Xshare:off -javaagent:/otel/opentelemetry-javaagent.jar -version
+    && ffprobe -version
+COPY --from=runtime /var/lib/dpkg/status.d/ /base-status/
+# Distroless intentionally omits package dependencies that its runtime does not need.
+RUN set -eu; \
+    : > /tmp/base.status; \
+    for f in /base-status/*; do \
+        case "$f" in *.md5sums) continue;; esac; \
+        printf 'Status: install ok installed\n' >> /tmp/base.status; \
+        awk '/^(Package|Version|Architecture|Multi-Arch|Provides):/ {print}' "$f" >> /tmp/base.status; \
+        printf '\n' >> /tmp/base.status; \
+    done; \
+    apt-get install -y --download-only --no-install-recommends -o Dir::State::status=/tmp/base.status ffmpeg; \
+    mkdir -p /out/var/lib/dpkg/status.d; \
+    for deb in /var/cache/apt/archives/*.deb; do \
+        package=$(dpkg-deb -f "$deb" Package); \
+        dpkg-deb -x "$deb" /out; \
+        dpkg-deb -f "$deb" > "/out/var/lib/dpkg/status.d/$package"; \
+        if dpkg-deb --ctrl-tarfile "$deb" | tar -tf - | grep -qx './md5sums'; then \
+            dpkg-deb --ctrl-tarfile "$deb" | tar -xOf - ./md5sums > "/out/var/lib/dpkg/status.d/$package.md5sums"; \
+        fi; \
+    done; \
+    cp -a /usr/share/mime/. /out/usr/share/mime/; \
+    for cache in /usr/lib/*/gdk-pixbuf-2.0/*/loaders.cache; do \
+        [ -f "$cache" ] || continue; \
+        cp --parents "$cache" /out; \
+    done; \
+    for dir in /out/usr/lib/*/blas /out/usr/lib/*/lapack; do \
+        for lib in "$dir"/*.so.3; do \
+            [ -f "$lib" ] || continue; \
+            ln -s "$(basename "$dir")/$(basename "$lib")" "$(dirname "$dir")/$(basename "$lib")"; \
+        done; \
+    done
+
+FROM runtime
+ARG JAVA_BASE_TAG
+ARG OTEL_VERSION
+LABEL org.opencontainers.image.source=https://github.com/keecon/docker-images
+LABEL org.opencontainers.image.version=${OTEL_VERSION}
+LABEL org.opencontainers.image.base.name=${JAVA_BASE_TAG}
+COPY --from=packages /out/ /
+COPY --from=download /tmp/opentelemetry-javaagent.jar /otel/opentelemetry-javaagent.jar
