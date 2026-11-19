@@ -4,19 +4,19 @@ on:
   push:
     branches: [main]
     paths:
-    - open-telemetry/agent/Dockerfile.jdk25
+    - open-telemetry/agent/Dockerfile.default
     - open-telemetry/agent/Dockerfile.distroless
-    - open-telemetry/agent/Dockerfile.jdk25-alpine
-    - open-telemetry/agent/Dockerfile.jdk25-ffmpeg
+    - open-telemetry/agent/Dockerfile.alpine
+    - open-telemetry/agent/Dockerfile.ffmpeg
     - open-telemetry/agent/otel-v2.env
     - open-telemetry/agent/test-java-image.sh
     - .github/workflows/open-telemetry2-jdk25.yml
   pull_request:
     paths:
-    - open-telemetry/agent/Dockerfile.jdk25
+    - open-telemetry/agent/Dockerfile.default
     - open-telemetry/agent/Dockerfile.distroless
-    - open-telemetry/agent/Dockerfile.jdk25-alpine
-    - open-telemetry/agent/Dockerfile.jdk25-ffmpeg
+    - open-telemetry/agent/Dockerfile.alpine
+    - open-telemetry/agent/Dockerfile.ffmpeg
     - open-telemetry/agent/otel-v2.env
     - open-telemetry/agent/test-java-image.sh
     - .github/workflows/open-telemetry2-jdk25.yml
@@ -48,37 +48,37 @@ jobs:
           java_major: 25
           java_kind: jre
           variant: distroless
-        - dockerfile: open-telemetry/agent/Dockerfile.jdk25
+        - dockerfile: open-telemetry/agent/Dockerfile.default
           java_base_tag: 25.0.5_8-jdk-noble
           tag_suffix: jdk25
           java_major: 25
           java_kind: jdk
           variant: plain
-        - dockerfile: open-telemetry/agent/Dockerfile.jdk25-alpine
+        - dockerfile: open-telemetry/agent/Dockerfile.alpine
           java_base_tag: 25.0.5_8-jdk-alpine
           tag_suffix: jdk25-alpine
           java_major: 25
           java_kind: jdk
           variant: alpine
-        - dockerfile: open-telemetry/agent/Dockerfile.jdk25-ffmpeg
+        - dockerfile: open-telemetry/agent/Dockerfile.ffmpeg
           java_base_tag: 25.0.5_8-jdk-noble
           tag_suffix: jdk25-ffmpeg
           java_major: 25
           java_kind: jdk
           variant: ffmpeg
-        - dockerfile: open-telemetry/agent/Dockerfile.jdk25
+        - dockerfile: open-telemetry/agent/Dockerfile.default
           java_base_tag: 25.0.5_8-jre-noble
           tag_suffix: jre25
           java_major: 25
           java_kind: jre
           variant: plain
-        - dockerfile: open-telemetry/agent/Dockerfile.jdk25-alpine
+        - dockerfile: open-telemetry/agent/Dockerfile.alpine
           java_base_tag: 25.0.5_8-jre-alpine
           tag_suffix: jre25-alpine
           java_major: 25
           java_kind: jre
           variant: alpine
-        - dockerfile: open-telemetry/agent/Dockerfile.jdk25-ffmpeg
+        - dockerfile: open-telemetry/agent/Dockerfile.ffmpeg
           java_base_tag: 25.0.5_8-jre-noble
           tag_suffix: jre25-ffmpeg
           java_major: 25
@@ -137,22 +137,22 @@ jobs:
         - dockerfile: open-telemetry/agent/Dockerfile.distroless
           java_base_tag: gcr.io/distroless/java25-debian13:latest
           tag_suffix: jre25-distroless
-        - dockerfile: open-telemetry/agent/Dockerfile.jdk25
+        - dockerfile: open-telemetry/agent/Dockerfile.default
           java_base_tag: 25.0.5_8-jdk-noble
           tag_suffix: jdk25
-        - dockerfile: open-telemetry/agent/Dockerfile.jdk25-alpine
+        - dockerfile: open-telemetry/agent/Dockerfile.alpine
           java_base_tag: 25.0.5_8-jdk-alpine
           tag_suffix: jdk25-alpine
-        - dockerfile: open-telemetry/agent/Dockerfile.jdk25-ffmpeg
+        - dockerfile: open-telemetry/agent/Dockerfile.ffmpeg
           java_base_tag: 25.0.5_8-jdk-noble
           tag_suffix: jdk25-ffmpeg
-        - dockerfile: open-telemetry/agent/Dockerfile.jdk25
+        - dockerfile: open-telemetry/agent/Dockerfile.default
           java_base_tag: 25.0.5_8-jre-noble
           tag_suffix: jre25
-        - dockerfile: open-telemetry/agent/Dockerfile.jdk25-alpine
+        - dockerfile: open-telemetry/agent/Dockerfile.alpine
           java_base_tag: 25.0.5_8-jre-alpine
           tag_suffix: jre25-alpine
-        - dockerfile: open-telemetry/agent/Dockerfile.jdk25-ffmpeg
+        - dockerfile: open-telemetry/agent/Dockerfile.ffmpeg
           java_base_tag: 25.0.5_8-jre-noble
           tag_suffix: jre25-ffmpeg
     steps:
