@@ -22,12 +22,24 @@ case "$java_kind" in
 esac
 
 case "$variant" in
-    plain|alpine|ffmpeg|tomcat) ;;
+    plain|alpine|ffmpeg|tomcat|distroless) ;;
     *)
         echo "unsupported variant: $variant" >&2
         exit 2
         ;;
 esac
+
+if [ "$variant" = distroless ]; then
+    output=$(docker run --rm --entrypoint java -e OTEL_SDK_DISABLED=true "$image" \
+        -Xshare:off -javaagent:/otel/opentelemetry-javaagent.jar -version 2>&1) || {
+        printf '%s\n' "$output" >&2
+        exit 1
+    }
+    printf '%s\n' "$output"
+    printf '%s\n' "$output" | grep --fixed-strings "openjdk version \"${java_major_version}." >/dev/null
+    printf '%s\n' "$output" | grep --fixed-strings "opentelemetry-javaagent - version: ${otel_version}" >/dev/null
+    exit 0
+fi
 
 if ! output=$(docker run --rm -e OTEL_SDK_DISABLED=true "$image" sh -c '
     set -eu

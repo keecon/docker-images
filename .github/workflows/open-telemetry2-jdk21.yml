@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
     - open-telemetry/agent/Dockerfile.jdk21
+    - open-telemetry/agent/Dockerfile.distroless
     - open-telemetry/agent/Dockerfile.jdk21-alpine
     - open-telemetry/agent/Dockerfile.jdk21-ffmpeg
     - open-telemetry/agent/otel-v2.env
@@ -13,6 +14,7 @@ on:
   pull_request:
     paths:
     - open-telemetry/agent/Dockerfile.jdk21
+    - open-telemetry/agent/Dockerfile.distroless
     - open-telemetry/agent/Dockerfile.jdk21-alpine
     - open-telemetry/agent/Dockerfile.jdk21-ffmpeg
     - open-telemetry/agent/otel-v2.env
@@ -40,6 +42,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
+        - dockerfile: open-telemetry/agent/Dockerfile.distroless
+          java_base_tag: gcr.io/distroless/java21-debian13:latest
+          tag_suffix: jre21-distroless
+          java_major: 21
+          java_kind: jre
+          variant: distroless
         - dockerfile: open-telemetry/agent/Dockerfile.jdk21
           java_base_tag: 21.0.13_9-jdk-noble
           tag_suffix: jdk21
@@ -126,6 +134,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
+        - dockerfile: open-telemetry/agent/Dockerfile.distroless
+          java_base_tag: gcr.io/distroless/java21-debian13:latest
+          tag_suffix: jre21-distroless
         - dockerfile: open-telemetry/agent/Dockerfile.jdk21
           java_base_tag: 21.0.13_9-jdk-noble
           tag_suffix: jdk21
