@@ -29,6 +29,19 @@ case "$variant" in
         ;;
 esac
 
+# A missing base-image platform can silently fall back to another arch (e.g. arm/v7 for arm64).
+case "${DOCKER_DEFAULT_PLATFORM:-linux/amd64}" in
+    linux/amd64) expected_arch=amd64 ;;
+    linux/arm64) expected_arch=aarch64 ;;
+    *) echo "unsupported platform: ${DOCKER_DEFAULT_PLATFORM}" >&2; exit 2 ;;
+esac
+actual_arch=$(docker run --rm --entrypoint java "$image" -XshowSettings:properties -version 2>&1 \
+    | sed -n 's/^ *os\.arch = //p')
+if [ "$actual_arch" != "$expected_arch" ]; then
+    echo "expected os.arch $expected_arch but got '$actual_arch' in $image" >&2
+    exit 1
+fi
+
 if [ "$variant" = distroless ] || [ "$variant" = distroless-ffmpeg ]; then
     output=$(docker run --rm --entrypoint java -e OTEL_SDK_DISABLED=true "$image" \
         -Xshare:off -javaagent:/otel/opentelemetry-javaagent.jar -version 2>&1) || {
