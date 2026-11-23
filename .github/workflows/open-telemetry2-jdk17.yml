@@ -72,4 +72,4 @@ jobs:
     - name: Build, test, and optionally publish the same image
       env:
         PUBLISH: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.publish)) }}
-      run: ./open-telemetry/agent/build-java-images.sh 17 17.0.21_9 "$PUBLISH" "${{ matrix.variant }}"
+      run: ./open-telemetry/agent/build-java-images.sh 17 17.0.21.1_2 "$PUBLISH" "${{ matrix.variant }}"
