@@ -19,7 +19,7 @@ agent_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 platforms=linux/amd64,linux/arm64
 case "$image_variant" in
     distroless) suffix=jre${java_major}-distroless; dockerfile=distroless; java_kind=jre; variant=distroless; java_base_tag=gcr.io/distroless/java${java_major}-debian13:latest ;;
-    jdk|jre) suffix=${image_variant}${java_major}; dockerfile=default; java_kind=$image_variant; variant=plain; java_base_tag=${temurin_version}-${image_variant}-resolute ;;
+    jdk|jre) suffix=${image_variant}${java_major}; dockerfile=; java_kind=$image_variant; variant=plain; java_base_tag=${temurin_version}-${image_variant}-resolute ;;
     jre-alpine) java_kind=jre; suffix=${java_kind}${java_major}-alpine; dockerfile=alpine; variant=alpine; java_base_tag=${temurin_version}-${java_kind}-alpine
         if [ "$java_major" = 17 ]; then platforms=linux/amd64; fi ;;
     ffmpeg) suffix=jre${java_major}-ffmpeg; dockerfile=ffmpeg; java_kind=jre; variant=distroless-ffmpeg; java_base_tag=gcr.io/distroless/java${java_major}-debian13:latest ;;
@@ -27,7 +27,7 @@ case "$image_variant" in
 esac
 image=local/open-telemetry:${OTEL_VERSION}-${suffix}
 docker buildx build --platform "$platforms" --load --pull \
-    --file "$agent_dir/Dockerfile.$dockerfile" \
+    --file "$agent_dir/Dockerfile${dockerfile:+.$dockerfile}" \
     --build-arg "JAVA_BASE_TAG=$java_base_tag" \
     --build-arg "OTEL_VERSION=$OTEL_VERSION" \
     --build-arg "OTEL_SHA256=$OTEL_SHA256" \
