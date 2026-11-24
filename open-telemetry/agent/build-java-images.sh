@@ -20,8 +20,6 @@ platforms=linux/amd64,linux/arm64
 case "$image_variant" in
     distroless) suffix=jre${java_major}-distroless; dockerfile=distroless; java_kind=jre; variant=distroless; java_base_tag=gcr.io/distroless/java${java_major}-debian13:latest ;;
     jdk|jre) suffix=${image_variant}${java_major}; dockerfile=; java_kind=$image_variant; variant=plain; java_base_tag=${temurin_version}-${image_variant}-resolute ;;
-    jre-alpine) java_kind=jre; suffix=${java_kind}${java_major}-alpine; dockerfile=alpine; variant=alpine; java_base_tag=${temurin_version}-${java_kind}-alpine
-        if [ "$java_major" = 17 ]; then platforms=linux/amd64; fi ;;
     ffmpeg) suffix=jre${java_major}-ffmpeg; dockerfile=ffmpeg; java_kind=jre; variant=distroless-ffmpeg; java_base_tag=gcr.io/distroless/java${java_major}-debian13:latest ;;
     *) echo "unsupported image variant: $image_variant" >&2; exit 2 ;;
 esac

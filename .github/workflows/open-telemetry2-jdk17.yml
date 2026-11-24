@@ -6,7 +6,6 @@ on:
     paths:
     - open-telemetry/agent/Dockerfile
     - open-telemetry/agent/Dockerfile.distroless
-    - open-telemetry/agent/Dockerfile.alpine
     - open-telemetry/agent/Dockerfile.ffmpeg
     - open-telemetry/agent/otel-v2.env
     - open-telemetry/agent/test-java-image.sh
@@ -18,7 +17,6 @@ on:
     paths:
     - open-telemetry/agent/Dockerfile
     - open-telemetry/agent/Dockerfile.distroless
-    - open-telemetry/agent/Dockerfile.alpine
     - open-telemetry/agent/Dockerfile.ffmpeg
     - open-telemetry/agent/otel-v2.env
     - open-telemetry/agent/test-java-image.sh
@@ -47,7 +45,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        variant: [distroless, jdk, jre, jre-alpine, ffmpeg]
+        variant: [distroless, jdk, jre, ffmpeg]
     steps:
     - uses: actions/checkout@v7
     - name: Test image build and publication flow

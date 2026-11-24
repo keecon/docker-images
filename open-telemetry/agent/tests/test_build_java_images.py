@@ -30,7 +30,7 @@ class BuildJavaImagesTest(unittest.TestCase):
 
     def test_each_variant_is_tested_before_publishing(self):
         for major in (17, 21, 25):
-            for variant in ('distroless', 'jdk', 'jre', 'jre-alpine', 'ffmpeg'):
+            for variant in ('distroless', 'jdk', 'jre', 'ffmpeg'):
                 with self.subTest(major=major, variant=variant):
                     self.log.unlink(missing_ok=True)
                     self.assertEqual(self.run_build(major, 'true', variant=variant).returncode, 0)
@@ -39,21 +39,16 @@ class BuildJavaImagesTest(unittest.TestCase):
                     tests = [i for i, call in enumerate(calls) if call.startswith('test ')]
                     pushes = [i for i, call in enumerate(calls) if call.startswith('docker push ')]
                     self.assertEqual(len(builds), 1)
-                    self.assertEqual(len(tests), 1 if major == 17 and variant == 'jre-alpine' else 2)
+                    self.assertEqual(len(tests), 2)
                     self.assertEqual(len(pushes), 2)
                     self.assertLess(max(tests), min(pushes))
                     for i in pushes:
                         self.assertTrue(calls[i - 1].startswith('docker tag local/open-telemetry:2.3.4-'))
                         self.assertEqual(calls[i - 1].split()[-1], calls[i].split()[-1])
                         self.assertEqual(calls[i - 1].split()[-2].split('2.3.4-', 1)[1], calls[i].rsplit(':', 1)[1].split('-', 1)[1])
-                    if variant == 'jre-alpine':
-                        self.assertIn(f'jre{major}-alpine', calls[builds[0]])
-                        platforms = '--platform linux/amd64 ' if major == 17 else '--platform linux/amd64,linux/arm64 '
-                        self.assertIn(platforms, calls[builds[0]])
-                    self.assertFalse(any(f'jdk{major}-alpine' in call for call in calls))
 
     def test_invalid_variant_is_rejected(self):
-        self.assertNotEqual(self.run_build(25, 'true', variant='jdk-alpine').returncode, 0)
+        self.assertNotEqual(self.run_build(25, 'true', variant='jre-alpine').returncode, 0)
         self.assertFalse(self.log.exists())
 
     def test_failed_build_prevents_all_publication(self):

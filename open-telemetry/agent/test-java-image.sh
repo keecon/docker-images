@@ -22,7 +22,7 @@ case "$java_kind" in
 esac
 
 case "$variant" in
-    plain|alpine|ffmpeg|tomcat|distroless|distroless-ffmpeg) ;;
+    plain|distroless|distroless-ffmpeg) ;;
     *)
         echo "unsupported variant: $variant" >&2
         exit 2
@@ -92,25 +92,6 @@ if ! output=$(docker run --rm -e OTEL_SDK_DISABLED=true "$image" sh -c '
             fi
         done
     fi
-
-    if command -v apk >/dev/null 2>&1; then
-        if apk info -e libexpat >/dev/null 2>&1 \
-            && ! apk info -e "libexpat>=2.8.5-r0" >/dev/null 2>&1; then
-            echo "libexpat must be at least 2.8.5-r0" >&2
-            exit 1
-        fi
-
-        for package in build-base curl gcc g++ make linux-headers musl-dev openssl-dev; do
-            if apk info -e "$package" >/dev/null 2>&1; then
-                echo "forbidden package is installed: $package" >&2
-                exit 1
-            fi
-        done
-    fi
-
-    if [ "'"$variant"'" = tomcat ]; then
-        catalina.sh version
-    fi
 ' 2>&1); then
     printf '%s\n' "$output" >&2
     exit 1
@@ -134,14 +115,7 @@ if ! printf '%s\n' "$output" | grep --fixed-strings "opentelemetry-javaagent - v
     exit 1
 fi
 
-if [ "$variant" = ffmpeg ]; then
-    docker run --rm "$image" sh -c '
-        set -eu
-        ffmpeg -version
-        ffprobe -version
-        ffmpeg -hide_banner -encoders 2>/dev/null | grep --fixed-strings libmp3lame
-    '
-elif docker run --rm "$image" sh -c 'command -v ffmpeg >/dev/null 2>&1'; then
+if docker run --rm "$image" sh -c 'command -v ffmpeg >/dev/null 2>&1'; then
     echo "ffmpeg must not be installed in $variant image" >&2
     exit 1
 fi
