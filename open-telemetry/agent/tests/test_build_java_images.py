@@ -46,6 +46,16 @@ class BuildJavaImagesTest(unittest.TestCase):
                         self.assertTrue(calls[i - 1].startswith('docker tag local/open-telemetry:2.3.4-'))
                         self.assertEqual(calls[i - 1].split()[-1], calls[i].split()[-1])
                         self.assertEqual(calls[i - 1].split()[-2].split('2.3.4-', 1)[1], calls[i].rsplit(':', 1)[1].split('-', 1)[1])
+                    build = calls[builds[0]]
+                    if variant in ('jdk', 'jre'):
+                        self.assertIn(f'--build-arg TEMURIN_VERSION={major}.0.1_2', build)
+                        self.assertIn(f'--build-arg JAVA_KIND={variant}', build)
+                        self.assertIn('--build-arg JAVA_BASE_TAG=debian:13-slim', build)
+                        self.assertRegex(build, r'--file \S+/Dockerfile ')
+                    else:
+                        self.assertNotIn('TEMURIN_VERSION', build)
+                        self.assertRegex(build, rf'--file \S+/Dockerfile\.{variant} ')
+                        self.assertIn('-debian13:latest', build)
 
     def test_invalid_variant_is_rejected(self):
         self.assertNotEqual(self.run_build(25, 'true', variant='jre-alpine').returncode, 0)

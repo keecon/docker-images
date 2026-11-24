@@ -17,9 +17,11 @@ esac
 agent_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 
 platforms=linux/amd64,linux/arm64
+temurin_args=
 case "$image_variant" in
     distroless) suffix=jre${java_major}-distroless; dockerfile=distroless; java_kind=jre; variant=distroless; java_base_tag=gcr.io/distroless/java${java_major}-debian13:latest ;;
-    jdk|jre) suffix=${image_variant}${java_major}; dockerfile=; java_kind=$image_variant; variant=plain; java_base_tag=${temurin_version}-${image_variant}-resolute ;;
+    jdk|jre) suffix=${image_variant}${java_major}; dockerfile=; java_kind=$image_variant; variant=plain; java_base_tag=debian:13-slim
+        temurin_args="--build-arg JAVA_MAJOR=$java_major --build-arg JAVA_KIND=$java_kind --build-arg TEMURIN_VERSION=$temurin_version" ;;
     ffmpeg) suffix=jre${java_major}-ffmpeg; dockerfile=ffmpeg; java_kind=jre; variant=distroless-ffmpeg; java_base_tag=gcr.io/distroless/java${java_major}-debian13:latest ;;
     *) echo "unsupported image variant: $image_variant" >&2; exit 2 ;;
 esac
@@ -27,6 +29,7 @@ image=local/open-telemetry:${OTEL_VERSION}-${suffix}
 docker buildx build --platform "$platforms" --load --pull \
     --file "$agent_dir/Dockerfile${dockerfile:+.$dockerfile}" \
     --build-arg "JAVA_BASE_TAG=$java_base_tag" \
+    $temurin_args \
     --build-arg "OTEL_VERSION=$OTEL_VERSION" \
     --build-arg "OTEL_SHA256=$OTEL_SHA256" \
     --tag "$image" "$agent_dir"

@@ -42,6 +42,27 @@ if [ "$actual_arch" != "$expected_arch" ]; then
     exit 1
 fi
 
+# User policy: the default user is root, and a nonroot user (65532) must exist and be usable.
+configured_user=$(docker image inspect --format '{{.Config.User}}' "$image")
+case "$configured_user" in
+    ''|0|root|0:0|root:root) ;;
+    *) echo "expected default user root but got '$configured_user' in $image" >&2; exit 1 ;;
+esac
+container=$(docker create "$image")
+passwd_entry=$(docker cp "$container:/etc/passwd" - | tar -xOf - | grep '^nonroot:' || true)
+docker rm "$container" >/dev/null
+if [ "${passwd_entry%%:*}:$(printf '%s' "$passwd_entry" | cut -d: -f3,4)" != nonroot:65532:65532 ]; then
+    echo "expected nonroot user 65532:65532 in $image, got '$passwd_entry'" >&2
+    exit 1
+fi
+nonroot_output=$(docker run --rm --user nonroot --entrypoint java -e OTEL_SDK_DISABLED=true "$image" \
+    -Xshare:off -javaagent:/otel/opentelemetry-javaagent.jar -version 2>&1) || {
+    printf '%s\n' "$nonroot_output" >&2
+    echo "java with the OpenTelemetry agent must run as nonroot in $image" >&2
+    exit 1
+}
+printf '%s\n' "$nonroot_output" | grep --fixed-strings "opentelemetry-javaagent - version: ${otel_version}" >/dev/null
+
 if [ "$variant" = distroless ] || [ "$variant" = distroless-ffmpeg ]; then
     output=$(docker run --rm --entrypoint java -e OTEL_SDK_DISABLED=true "$image" \
         -Xshare:off -javaagent:/otel/opentelemetry-javaagent.jar -version 2>&1) || {
@@ -71,8 +92,12 @@ if ! output=$(docker run --rm -e OTEL_SDK_DISABLED=true "$image" sh -c '
 
     if [ "'"$variant"'" = plain ]; then
         . /etc/os-release
-        if [ "$ID" != ubuntu ] || [ "$VERSION_ID" != 26.04 ]; then
-            echo "expected Ubuntu 26.04 in the default image" >&2
+        if [ "$ID" != debian ] || [ "$VERSION_ID" != 13 ]; then
+            echo "expected Debian 13 in the default image" >&2
+            exit 1
+        fi
+        if [ "${LANG:-}" != C.UTF-8 ]; then
+            echo "expected LANG=C.UTF-8 in the default image" >&2
             exit 1
         fi
     fi
