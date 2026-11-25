@@ -16,7 +16,8 @@
 - 배지는 각 JDK 기본 이미지의 최신 배포 태그입니다.
   - `2-jdk25`, `2-jdk21`, `2-jdk17` 태그도 사용할 수 있습니다.
 - 새 Java LTS를 추가하면 가장 오래된 LTS의 신규 빌드와 배포를 중단합니다.
-  - 기존 Temurin JDK와 JRE는 같은 패치·빌드 버전으로 함께 갱신합니다. Distroless는 별도의 베이스 이미지 갱신 주기를 따릅니다.
+  - 기존 Temurin JDK와 JRE는 같은 패치·빌드 버전으로 함께 갱신합니다. Distroless는 베이스 이미지(`:latest`) 갱신을 반영하려면 재빌드가 필요하며, Temurin 버전은 distroless와 일치시킵니다.
+- OpenTelemetry 이미지를 갱신할 때는 Google distroless(`gcr.io/distroless/java*-debian*`)를 기준으로 Debian 릴리스, Temurin 버전, 사용자(nonroot 65532)·`LANG` 등 관련 설정을 맞춥니다.
 - FFmpeg 이미지는 Debian 13 distroless와 Debian FFmpeg 패키지를 사용합니다.
 - `jdkXX-alpine`, `jreXX-alpine`, `jdkXX-ffmpeg` 태그의 신규 배포는 중단했으며 기존 태그는 갱신되지 않습니다.
 
